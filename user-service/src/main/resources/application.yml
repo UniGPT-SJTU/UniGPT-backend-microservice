@@ -1,0 +1,30 @@
+spring:
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 10MB
+  web:
+    resources:
+      static-locations: file:./src/main/resources/static/
+  application:
+    name: user-service
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+logging:
+  level:
+    org.springframework.web.socket: DEBUG
+
+server:
+   port: 8082
+   ssl:
+      key-store: keystore.p12
+      key-store-password: unigpt
+      keyStoreType: PKCS12
+      keyAlias: tomcat
