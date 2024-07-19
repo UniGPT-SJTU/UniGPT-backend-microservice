@@ -1,13 +1,18 @@
 package com.unigpt.user.serviceImpl;
 
+import com.unigpt.user.dto.UserBriefInfoDTO;
 import com.unigpt.user.dto.UserUpdateDTO;
 import com.unigpt.user.model.User;
 import com.unigpt.user.repository.UserRepository;
 import com.unigpt.user.service.UserService;
+import com.unigpt.user.dto.GetUsersOkResponseDTO;
+import com.unigpt.user.utils.PaginationUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 
 @Service
@@ -44,6 +49,39 @@ public class UserServiceImpl implements UserService {
 
         repository.save(targetUser);
     }
+
+    // type : id || name
+    // q: keyword
+    public GetUsersOkResponseDTO getUsers(Integer page, Integer pagesize, String type, String q) {
+        List<User> users = repository.findAll();
+        List<UserBriefInfoDTO> userBriefInfoDTOs;
+        System.out.println("type: " + type + " q: " + q);
+        if (type.equals("id")) {
+            Integer id;
+            try {
+                id = Integer.parseInt(q);
+            } catch (NumberFormatException e) {
+                userBriefInfoDTOs = users.stream()
+                        .map(UserBriefInfoDTO::new)
+                        .collect(Collectors.toList());
+                return new GetUsersOkResponseDTO(userBriefInfoDTOs.size(),
+                        PaginationUtils.paginate(userBriefInfoDTOs, page, pagesize));
+            }
+            userBriefInfoDTOs = users.stream()
+                    .filter(user -> user.getId() == id)
+                    .map(UserBriefInfoDTO::new)
+                    .collect(Collectors.toList());
+        } else {
+            userBriefInfoDTOs = users.stream()
+                    .filter(user -> user.getName().contains(q))
+                    .map(UserBriefInfoDTO::new)
+                    .collect(Collectors.toList());
+        }
+
+        return new GetUsersOkResponseDTO(userBriefInfoDTOs.size(),
+                PaginationUtils.paginate(userBriefInfoDTOs, page, pagesize));
+    }
+
 
 //    public GetBotsOkResponseDTO getUsedBots(Integer userid, String token, Integer page, Integer pageSize)
 //            throws AuthenticationException {
@@ -94,50 +132,7 @@ public class UserServiceImpl implements UserService {
 //        return new GetBotsOkResponseDTO(bots.size(), PaginationUtils.paginate(bots, page, pageSize));
 //    }
 //
-//    // type : id || name
-//    // q: keyword
-//    public GetUsersOkResponseDTO getUsers(Integer page, Integer pagesize, String token, String type, String q)
-//            throws AuthenticationException {
-//        User requestUser;
-//        try {
-//            requestUser = authService.getUserByToken(token);
-//        } catch (NoSuchElementException e) {
-//            throw new AuthenticationException("Unauthorized to get users");
-//        }
-//
-//        if (!requestUser.getAsAdmin()) {
-//            throw new AuthenticationException("Unauthorized to get users");
-//        }
-//
-//        List<User> users = repository.findAll();
-//        List<UserBriefInfoDTO> userBriefInfoDTOs;
-//        System.out.println("type: " + type + " q: " + q);
-//        if (type.equals("id")) {
-//            Integer id;
-//            try {
-//                id = Integer.parseInt(q);
-//            } catch (NumberFormatException e) {
-//                userBriefInfoDTOs = users.stream()
-//                        .map(UserBriefInfoDTO::new)
-//                        .collect(Collectors.toList());
-//                return new GetUsersOkResponseDTO(userBriefInfoDTOs.size(),
-//                        PaginationUtils.paginate(userBriefInfoDTOs, page, pagesize));
-//            }
-//            userBriefInfoDTOs = users.stream()
-//                    .filter(user -> user.getId() == id)
-//                    .map(UserBriefInfoDTO::new)
-//                    .collect(Collectors.toList());
-//        } else {
-//            userBriefInfoDTOs = users.stream()
-//                    .filter(user -> user.getName().contains(q))
-//                    .map(UserBriefInfoDTO::new)
-//                    .collect(Collectors.toList());
-//        }
-//
-//        return new GetUsersOkResponseDTO(userBriefInfoDTOs.size(),
-//                PaginationUtils.paginate(userBriefInfoDTOs, page, pagesize));
-//    }
-//
+
 //    public void setBanUser(Integer id, String token, Boolean state) throws AuthenticationException {
 //        User requestUser;
 //        try {

@@ -1,6 +1,7 @@
 package com.unigpt.user.service;
 
 
+import com.unigpt.user.dto.GetUsersOkResponseDTO;
 import com.unigpt.user.dto.UserUpdateDTO;
 import com.unigpt.user.model.User;
 
@@ -11,19 +12,9 @@ public interface UserService {
 
     Integer createUser(String email);
     User findUserById(Integer id);
-    void updateUserInfo( Integer id, UserUpdateDTO userUpdateDTO);
+    void updateUserInfo(Integer id, UserUpdateDTO userUpdateDTO);
+    GetUsersOkResponseDTO getUsers(Integer page, Integer pagesize, String type, String q);
 
-//    /**
-//     * @brief 更新用户信息
-//     * @param id                       用户id
-//     * @param updateUserInfoRequestDTO 更新用户信息请求
-//     * @param token                    用户token
-//     */
-//    void updateUserInfo(
-//            Integer id,
-//            UpdateUserInfoRequestDTO updateUserInfoRequestDTO,
-//            String token) throws AuthenticationException;
-//
 //    /**
 //     * @brief 获取使用过的机器人
 //     * @param userid   用户id
@@ -52,16 +43,7 @@ public interface UserService {
 //     * @param pageSize 每页大小
 //     */
 //    GetBotsOkResponseDTO getCreatedBots(Integer userid, String token, Integer page, Integer pageSize);
-//
-//    /**
-//     * @brief 获取用户列表
-//     * @param page     页码
-//     * @param pagesize 每页大小
-//     * @param token    用户token
-//     * @return 用户列表
-//     */
-//    GetUsersOkResponseDTO getUsers(Integer page, Integer pagesize, String token, String type, String q)
-//            throws AuthenticationException;
+
 //
 //    /**
 //     * @brief 禁用/解除禁用用户
