@@ -13,7 +13,7 @@ import com.unigpt.chat.model.History;
 public interface ChatRepository extends JpaRepository<Chat, Integer> {
 
     @Query("SELECT c FROM Chat c WHERE c.isVisible = true AND c.history = ?1")
-    Page<Chat> findByIsVisibleTrueAndHistory(History history, Pageable pageable);
+    Page<Chat> findChatsByIsVisibleTrueAndHistory(History history, Pageable pageable);
 
     @Query("SELECT COUNT(c) FROM Chat c WHERE c.isVisible = true AND c.history = ?1")
     Integer countByIsVisibleTrueAndHistory(History history);

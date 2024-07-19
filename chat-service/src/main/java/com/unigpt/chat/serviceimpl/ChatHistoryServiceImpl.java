@@ -48,7 +48,7 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
 
         Pageable pageable = PageRequest.of(page, pageSize);
         List<ChatDTO> chats = chatRepository
-                .findByIsVisibleTrueAndHistory(history, pageable)
+                .findChatsByIsVisibleTrueAndHistory(history, pageable)
                 .toList()
                 .stream()
                 .map(ChatDTO::new)
