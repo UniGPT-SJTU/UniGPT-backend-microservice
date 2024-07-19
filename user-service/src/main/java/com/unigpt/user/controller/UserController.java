@@ -15,9 +15,9 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createUser() {
+    public ResponseEntity<Object> createUser(@RequestParam(defaultValue = "") String email){
         try {
-            return ResponseEntity.ok(service.createUser());
+            return ResponseEntity.ok(service.createUser(email));
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }

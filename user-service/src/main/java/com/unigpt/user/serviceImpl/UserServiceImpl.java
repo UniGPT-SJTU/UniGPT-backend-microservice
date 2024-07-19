@@ -18,8 +18,9 @@ public class UserServiceImpl implements UserService {
         this.repository = repository;
     }
 
-    public Integer createUser(){
+    public Integer createUser(String email){
         User user = new User();
+        user.setEmail(email);
         repository.save(user);
         return user.getId();
     }
