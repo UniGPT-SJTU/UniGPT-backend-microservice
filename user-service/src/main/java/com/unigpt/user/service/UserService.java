@@ -14,6 +14,8 @@ public interface UserService {
      */
     User findUserById(Integer id);
 
+    Integer createUser();
+
 //    /**
 //     * @brief 更新用户信息
 //     * @param id                       用户id

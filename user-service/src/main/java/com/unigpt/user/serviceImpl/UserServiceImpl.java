@@ -25,6 +25,12 @@ public class UserServiceImpl implements UserService {
         return optionalUser.get();
     }
 
+    public Integer createUser(){
+        User user = new User();
+        repository.save(user);
+        return user.getId();
+    }
+
 //    public void updateUserInfo(
 //            Integer id,
 //            UpdateUserInfoRequestDTO updateUserInfoRequestDTO,
