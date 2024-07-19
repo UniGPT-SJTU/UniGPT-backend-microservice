@@ -1,20 +1,17 @@
 package com.unigpt.user.service;
 
 
+import com.unigpt.user.dto.UserUpdateDTO;
 import com.unigpt.user.model.User;
 
 import javax.security.sasl.AuthenticationException;
 
 public interface UserService {
 
-    /**
-     * @brief 根据用户id查找用户
-     * @param id 用户id
-     * @return 用户
-     */
-    User findUserById(Integer id);
 
     Integer createUser();
+    User findUserById(Integer id);
+    void updateUserInfo( Integer id, UserUpdateDTO userUpdateDTO);
 
 //    /**
 //     * @brief 更新用户信息

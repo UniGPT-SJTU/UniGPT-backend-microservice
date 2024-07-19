@@ -1,5 +1,6 @@
 package com.unigpt.user.controller;
 
+import com.unigpt.user.dto.UserUpdateDTO;
 import com.unigpt.user.service.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -13,15 +14,6 @@ public class UserController {
         this.service = service;
     }
 
-    @GetMapping("/{userid}")
-    public ResponseEntity<Object> getUserProfile(@PathVariable Integer userid) {
-        try {
-            return ResponseEntity.ok(service.findUserById(userid));
-        } catch (Exception e) {
-            return ResponseEntity.status(404).body(e.getMessage());
-        }
-    }
-
     @PostMapping
     public ResponseEntity<Object> createUser() {
         try {
@@ -31,5 +23,26 @@ public class UserController {
         }
     }
 
+    @GetMapping("/{userid}")
+    public ResponseEntity<Object> getUserProfile(@PathVariable Integer userid) {
+        try {
+            return ResponseEntity.ok(service.findUserById(userid));
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
+
+    @PutMapping("/{userid}")
+    public ResponseEntity<Object> updateUserProfile(
+            @PathVariable Integer userid,
+            @RequestBody UserUpdateDTO userUpdateDTO
+    ) {
+        try {
+            service.updateUserInfo(userid, userUpdateDTO);
+            return ResponseEntity.ok("User info updated successfully");
+        } catch (Exception e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
 
 }

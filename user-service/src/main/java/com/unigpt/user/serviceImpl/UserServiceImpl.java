@@ -1,5 +1,6 @@
 package com.unigpt.user.serviceImpl;
 
+import com.unigpt.user.dto.UserUpdateDTO;
 import com.unigpt.user.model.User;
 import com.unigpt.user.repository.UserRepository;
 import com.unigpt.user.service.UserService;
@@ -17,6 +18,12 @@ public class UserServiceImpl implements UserService {
         this.repository = repository;
     }
 
+    public Integer createUser(){
+        User user = new User();
+        repository.save(user);
+        return user.getId();
+    }
+
     public User findUserById(Integer id) {
         Optional<User> optionalUser = repository.findById(id);
         if (optionalUser.isEmpty()) {
@@ -25,31 +32,18 @@ public class UserServiceImpl implements UserService {
         return optionalUser.get();
     }
 
-    public Integer createUser(){
-        User user = new User();
-        repository.save(user);
-        return user.getId();
+    public void updateUserInfo(
+            Integer id,
+            UserUpdateDTO userUpdateDTO) {
+        User targetUser = findUserById(id);
+
+        targetUser.setName(userUpdateDTO.getName());
+        targetUser.setAvatar(userUpdateDTO.getAvatar());
+        targetUser.setDescription(userUpdateDTO.getDescription());
+
+        repository.save(targetUser);
     }
 
-//    public void updateUserInfo(
-//            Integer id,
-//            UpdateUserInfoRequestDTO updateUserInfoRequestDTO,
-//            String token) throws AuthenticationException {
-//        User targetUser = findUserById(id);
-//
-//        User requestUser = authService.getUserByToken(token);
-//        if (!targetUser.equals(requestUser)) {
-//            throw new AuthenticationException("Unauthorized to update user info");
-//        }
-//        targetUser.setName(updateUserInfoRequestDTO.getName());
-//        targetUser.setAvatar(updateUserInfoRequestDTO.getAvatar());
-//        targetUser.setDescription(updateUserInfoRequestDTO.getDescription());
-//        targetUser.setCanvasUrl(updateUserInfoRequestDTO.getCanvasUrl());
-//
-//        repository.save(targetUser);
-//    }
-//
-//    // TODO: 修改BotBriefInfoDTO.asCreator
 //    public GetBotsOkResponseDTO getUsedBots(Integer userid, String token, Integer page, Integer pageSize)
 //            throws AuthenticationException {
 //        User user = findUserById(userid);
