@@ -3,7 +3,6 @@ package com.unigpt.user.model;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.unigpt.user.model.Bot;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
