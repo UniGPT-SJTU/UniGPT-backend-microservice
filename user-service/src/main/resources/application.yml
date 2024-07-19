@@ -23,8 +23,8 @@ logging:
 
 server:
    port: 8082
-   ssl:
-      key-store: keystore.p12
-      key-store-password: unigpt
-      keyStoreType: PKCS12
-      keyAlias: tomcat
+#   ssl:
+#      key-store: keystore.p12
+#      key-store-password: unigpt
+#      keyStoreType: PKCS12
+#      keyAlias: tomcat
