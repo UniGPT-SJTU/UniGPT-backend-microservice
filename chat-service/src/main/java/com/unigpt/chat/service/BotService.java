@@ -1,6 +1,10 @@
 package com.unigpt.chat.service;
 
+import java.util.List;
+
+import com.unigpt.chat.dto.CreateBotHistoryOkResponseDTO;
 import com.unigpt.chat.dto.GetBotHistoryOkResponseDTO;
+import com.unigpt.chat.dto.PromptDTO;
 
 public interface BotService {
 
@@ -90,14 +94,18 @@ public interface BotService {
             Integer botId,
             Integer page,
             Integer pageSize);
+
     /**
      * @brief 添加机器人历史记录
+     * @param userId 用户id
      * @param id 机器人id
-     * @param token 用户token
      * @param promptList prompt记录内容
      * @return 添加结果
      */
-    // CreateBotHistoryOkResponseDTO createBotHistory(Integer id, String token, List<PromptDTO> promptList) throws Exception;
+    CreateBotHistoryOkResponseDTO createBotHistory(
+            Integer userId,
+            Integer id,
+            List<PromptDTO> promptList) throws Exception;
     // /**
     //  * s
     //  *
