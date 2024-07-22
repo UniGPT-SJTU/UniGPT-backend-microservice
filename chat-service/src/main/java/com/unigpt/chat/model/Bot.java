@@ -1,5 +1,7 @@
 package com.unigpt.chat.model;
 
+import com.unigpt.chat.dto.BotEditInfoDTO;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -34,6 +36,22 @@ public class Bot {
 
     public Bot() {
         // not used
+    }
+
+    public Bot(Integer id, BotEditInfoDTO dto, User creator) {
+        this.id = id;
+        this.name = dto.getName();
+        this.avatar = dto.getAvatar();
+        this.description = dto.getDescription();
+        this.isPublished = dto.getIsPublished();
+        this.creator = creator;
+    }
+
+    public void updateInfo(BotEditInfoDTO dto) {
+        this.name = dto.getName();
+        this.avatar = dto.getAvatar();
+        this.description = dto.getDescription();
+        this.isPublished = dto.getIsPublished();
     }
 
 }
