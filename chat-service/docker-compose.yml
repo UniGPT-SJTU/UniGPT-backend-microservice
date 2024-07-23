@@ -9,3 +9,15 @@ services:
       MYSQL_USER: unigpt
       MYSQL_PASSWORD: unigpt
       MYSQL_DATABASE: unigpt_chat
+
+  postgresql_db:
+    image: pgvector/pgvector:pg14
+    restart: always
+    environment:
+      POSTGRES_PASSWORD: bleaves
+      POSTGRES_USER: bleaves
+      POSTGRES_DB: mydatabase
+    ports:
+      - 5432:5432
+    volumes:
+      - ./data:/var/lib/postgresql/data
