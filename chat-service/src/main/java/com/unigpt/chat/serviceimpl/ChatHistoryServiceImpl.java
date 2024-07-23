@@ -1,5 +1,6 @@
 package com.unigpt.chat.serviceimpl;
 
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -13,11 +14,17 @@ import org.springframework.stereotype.Service;
 import com.unigpt.chat.dto.ChatDTO;
 import com.unigpt.chat.dto.GetChatsOkResponseDTO;
 import com.unigpt.chat.dto.PromptDTO;
+import com.unigpt.chat.model.Chat;
+import com.unigpt.chat.model.ChatType;
 import com.unigpt.chat.model.History;
+import com.unigpt.chat.model.Memory;
+import com.unigpt.chat.model.MemoryItem;
 import com.unigpt.chat.repository.ChatRepository;
 import com.unigpt.chat.repository.HistoryRepository;
 import com.unigpt.chat.repository.MemoryRepository;
 import com.unigpt.chat.service.ChatHistoryService;
+
+import dev.langchain4j.data.message.ChatMessageType;
 
 @Service
 public class ChatHistoryServiceImpl implements ChatHistoryService {
@@ -29,8 +36,7 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
     public ChatHistoryServiceImpl(
             HistoryRepository historyRepository,
             MemoryRepository memoryRepository,
-            ChatRepository chatRepository
-    ) {
+            ChatRepository chatRepository) {
         this.historyRepository = historyRepository;
         this.memoryRepository = memoryRepository;
         this.chatRepository = chatRepository;
@@ -93,6 +99,59 @@ public class ChatHistoryServiceImpl implements ChatHistoryService {
         // 先删除memory，再删除history
         memoryRepository.deleteById(historyId);
         historyRepository.deleteById(historyId);
+    }
+
+    @Override
+    public void deleteLastRoundOfChats(Integer historyId) {
+        History history = historyRepository.findById(historyId)
+                .orElseThrow(() -> new NoSuchElementException("History not found for ID: " + historyId));
+        Memory memory = memoryRepository.findById(historyId)
+                .orElseThrow(() -> new NoSuchElementException("Memory not found for ID: " + historyId));
+
+        // 删除最后一轮的对话（包括Chat和MemoryItem）
+        // 从后往前遍历，直到遇到第一个USER类型的对话
+
+        List<Chat> chats = history.getChats();
+        for (int i = chats.size() - 1; i >= 0; --i) {
+            Chat chat = chats.remove(i);
+            if (chat.getType() == ChatType.USER) {
+                break;
+            }
+        }
+        historyRepository.save(history);
+
+        List<MemoryItem> memoryItems = memory.getMemoryItems();
+        for (int i = memoryItems.size() - 1; i >= 0; --i) {
+            MemoryItem memoryItem = memoryItems.remove(i);
+            if (memoryItem.getType() == ChatMessageType.USER) {
+                break;
+            }
+        }
+        memoryRepository.save(memory);
+    }
+
+    @Override
+    public void createChat(Integer historyId, String content, ChatType type) {
+        History history = historyRepository.findById(historyId)
+                .orElseThrow(() -> new NoSuchElementException("History not found for ID: " + historyId));
+
+        Chat chat = new Chat(history, type, content, true);
+
+        history.getChats().add(chat);
+        historyRepository.save(history);
+    }
+
+    @Override
+    public History getHistory(Integer historyId) {
+        History history = historyRepository.findById(historyId)
+                .orElseThrow(() -> new NoSuchElementException("History not found for ID: " + historyId));
+        return history;
+    }
+
+    @Override
+    public void updateHistoryActiveTime(History history) {
+        history.setLastActiveTime(new Date());
+        historyRepository.save(history);
     }
 
 }

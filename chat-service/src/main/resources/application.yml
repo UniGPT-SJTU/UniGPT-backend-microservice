@@ -27,3 +27,11 @@ logging:
 
 server:
    port: 8080
+
+
+postgres:
+  host: ${POSTGRES_HOST:124.70.222.207}
+  port: ${POSTGRES_PORT:5432}
+  database: ${POSTGRES_DB:mydatabase}
+  username: ${POSTGRES_USER:bleaves}
+  password: ${POSTGRES_PASSWORD:bleaves}
