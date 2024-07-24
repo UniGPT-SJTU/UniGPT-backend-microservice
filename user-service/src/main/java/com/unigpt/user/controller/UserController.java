@@ -1,5 +1,6 @@
 package com.unigpt.user.controller;
 
+import com.unigpt.user.dto.GetBotsOkResponseDTO;
 import com.unigpt.user.dto.UserUpdateDTO;
 import com.unigpt.user.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -7,6 +8,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.security.sasl.AuthenticationException;
+import java.util.Collections;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/internal/users")
@@ -60,5 +64,6 @@ public class UserController {
             return ResponseEntity.status(404).body(e.getMessage());
         }
     }
+
 
 }

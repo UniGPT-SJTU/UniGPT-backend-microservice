@@ -24,7 +24,7 @@ public class Bot {
     private Integer dbId;
 
     @Column(name = "id")
-    private String id;
+    private Integer id;
 
     @Column(name = "name")
     private String name;
