@@ -33,8 +33,8 @@ public class User {
     @Column(name = "avatar")
     private String avatar;
 
-//    @Column(name = "account")
-//    private String account;
+    @Column(name = "account")
+    private String account;
 //
 //    @Column(name = "canvas")
 //    private String canvasUrl;

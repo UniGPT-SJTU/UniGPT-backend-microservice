@@ -9,8 +9,7 @@ import javax.security.sasl.AuthenticationException;
 
 public interface UserService {
 
-
-    Integer createUser(String email);
+    Integer createUser(String email, String account, String name);
     User findUserById(Integer id);
     void updateUserInfo(Integer id, UserUpdateDTO userUpdateDTO);
     GetUsersOkResponseDTO getUsers(Integer page, Integer pagesize, String type, String q);

@@ -22,9 +22,13 @@ public class UserController {
     }
 
     @PostMapping
-    public ResponseEntity<Object> createUser(@RequestParam(defaultValue = "") String email){
+    public ResponseEntity<Object> createUser(
+            @RequestParam(defaultValue = "") String email,
+            @RequestParam(defaultValue = "") String account,
+            @RequestParam(defaultValue = "") String name
+    ){
         try {
-            return ResponseEntity.ok(service.createUser(email));
+            return ResponseEntity.ok(service.createUser(email, account, name));
         } catch (Exception e) {
             return ResponseEntity.status(400).body(e.getMessage());
         }

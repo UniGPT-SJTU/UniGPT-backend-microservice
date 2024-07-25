@@ -23,9 +23,17 @@ public class UserServiceImpl implements UserService {
         this.repository = repository;
     }
 
-    public Integer createUser(String email){
+    public Integer createUser(String email, String account, String name){
+        // Check if account already exists
+        Optional<User> optionalUser = repository.findByAccount(account);
+        if (optionalUser.isPresent()) {
+            return optionalUser.get().getId();
+        }
+
         User user = new User();
         user.setEmail(email);
+        user.setAccount(account);
+        user.setName(name);
         repository.save(user);
         return user.getId();
     }
