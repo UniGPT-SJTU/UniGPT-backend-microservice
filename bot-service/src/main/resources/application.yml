@@ -1,0 +1,18 @@
+spring:
+  application:
+    name: unigpt_bot
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    show-sql: false
+logging:
+  level:
+    org.springframework.web.socket: DEBUG
+
+server:
+   port: 8080

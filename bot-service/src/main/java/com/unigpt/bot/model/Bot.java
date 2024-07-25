@@ -1,6 +1,5 @@
 package com.unigpt.bot.model;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import com.unigpt.bot.LLMArgs.LLMArgs;

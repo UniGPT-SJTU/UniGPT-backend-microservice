@@ -1,7 +1,5 @@
 package com.unigpt.bot.service;
 
-import java.util.List;
-
 import com.unigpt.bot.dto.BotBriefInfoDTO;
 import com.unigpt.bot.dto.BotDetailInfoDTO;
 import com.unigpt.bot.dto.BotEditInfoDTO;

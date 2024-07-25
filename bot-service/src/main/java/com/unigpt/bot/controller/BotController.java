@@ -7,8 +7,6 @@ import org.springframework.web.bind.annotation.*;
 import com.unigpt.bot.dto.ResponseDTO;
 import com.unigpt.bot.service.BotService;
 
-import java.util.List;
-import java.util.NoSuchElementException;
 
 @RestController
 @RequestMapping("/internal/bots")
@@ -43,8 +41,8 @@ public class BotController {
         try {
             return switch (info) {
                 case "brief" -> ResponseEntity.ok(service.getBotBriefInfo(userId, isAdmin, id));
-                case "detail" -> ResponseEntity.ok(service.getBotBriefInfo(userId, isAdmin, id));
-                case "edit" -> ResponseEntity.ok(service.getBotBriefInfo(userId, isAdmin, id));
+                case "detail" -> ResponseEntity.ok(service.getBotDetailInfo(userId, isAdmin, id));
+                case "edit" -> ResponseEntity.ok(service.getBotEditInfo(userId, isAdmin, id));
                 default -> ResponseEntity
                         .status(HttpStatus.BAD_REQUEST)
                         .body(new ResponseDTO(false, "Invalid info parameter"));
