@@ -1,6 +1,7 @@
 package com.unigpt.bot.serviceimpl;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -14,15 +15,18 @@ import org.springframework.stereotype.Service;
 import com.unigpt.bot.dto.BotBriefInfoDTO;
 import com.unigpt.bot.dto.BotDetailInfoDTO;
 import com.unigpt.bot.dto.BotEditInfoDTO;
+import com.unigpt.bot.dto.CommentDTO;
 import com.unigpt.bot.dto.GetBotsOkResponseDTO;
 import com.unigpt.bot.dto.GetCommentsOkResponseDTO;
 import com.unigpt.bot.dto.ResponseDTO;
 import com.unigpt.bot.model.Bot;
 import com.unigpt.bot.model.ChatType;
+import com.unigpt.bot.model.Comment;
 import com.unigpt.bot.model.Plugin;
 import com.unigpt.bot.model.PromptChat;
 import com.unigpt.bot.model.User;
 import com.unigpt.bot.repository.BotRepository;
+import com.unigpt.bot.repository.CommentRepository;
 import com.unigpt.bot.repository.PluginRepository;
 import com.unigpt.bot.repository.PromptChatRepository;
 import com.unigpt.bot.repository.UserRepository;
@@ -35,16 +39,19 @@ public class BotServiceImpl implements BotService {
     private final UserRepository userRepository;
     private final PromptChatRepository promptChatRepository;
     private final PluginRepository pluginRepository;
+    private final CommentRepository commentRepository;
 
     public BotServiceImpl(
             BotRepository botRepository,
             UserRepository userRepository,
             PromptChatRepository promptChatRepository,
-            PluginRepository pluginRepository) {
+            PluginRepository pluginRepository,
+            CommentRepository commentRepository) {
         this.botRepository = botRepository;
         this.userRepository = userRepository;
         this.promptChatRepository = promptChatRepository;
         this.pluginRepository = pluginRepository;
+        this.commentRepository = commentRepository;
     }
 
     private List<BotBriefInfoDTO> getBots(String q, Pageable pageable, String order) {
@@ -279,15 +286,28 @@ public class BotServiceImpl implements BotService {
     }
 
     @Override
-    public GetCommentsOkResponseDTO getComments(Integer id, Integer page, Integer pageSize) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'getComments'");
+    public GetCommentsOkResponseDTO getComments(Integer botId, Integer page, Integer pageSize) {
+        botRepository.findById(botId)
+            .orElseThrow(() -> new NoSuchElementException("Bot not found for ID: " + botId));
+
+        Pageable pageable = PageRequest.of(page, pageSize);
+        List<CommentDTO> comments = commentRepository.findByBotIdOrderByTimeDesc(botId, pageable)
+            .stream().map(CommentDTO::new).toList();
+        Integer commentsTotalCount = commentRepository.countByBotId(botId);
+        return new GetCommentsOkResponseDTO(commentsTotalCount, comments);
     }
 
     @Override
-    public ResponseDTO createComment(Integer id, String token, String content) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createComment'");
+    public ResponseDTO createComment(Integer userId, Integer botId, String content) {
+        Bot bot = botRepository.findById(botId)
+                .orElseThrow(() -> new NoSuchElementException("Bot not found for ID: " + botId));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User not found for ID: " + userId));
+        Comment newComment = new Comment(content, new Date(), user, bot);
+        bot.getComments().add(newComment);
+        botRepository.save(bot);
+
+        return new ResponseDTO(true, "Comment created successfully");
     }
 
 }

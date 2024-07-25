@@ -7,6 +7,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import com.unigpt.bot.dto.BotEditInfoDTO;
+import com.unigpt.bot.dto.CommentRequestDTO;
 import com.unigpt.bot.dto.ResponseDTO;
 import com.unigpt.bot.service.BotService;
 
@@ -133,29 +134,29 @@ public class BotController {
         }
     }
 
-    // @GetMapping("/{botid}/comments")
-    // public ResponseEntity<Object> getComments(@PathVariable Integer botid,
-    // @RequestParam(defaultValue = "0") Integer page,
-    // @RequestParam(defaultValue = "100") Integer pagesize) {
-    // try {
-    // return ResponseEntity.ok(service.getComments(botid, page, pagesize));
-    // } catch (Exception e) {
-    // return ResponseEntity.status(HttpStatus.NOT_FOUND)
-    // .body(new ResponseDTO(false, e.getMessage()));
-    // }
-    // }
+    @GetMapping("/{botid}/comments")
+    public ResponseEntity<Object> getComments(@PathVariable Integer botid,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "100") Integer pagesize) {
+        try {
+            return ResponseEntity.ok(service.getComments(botid, page, pagesize));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(false, e.getMessage()));
+        }
+    }
 
-    // @PostMapping("/{botid}/comments")
-    // public ResponseEntity<Object> createComment(@PathVariable Integer botid,
-    // @CookieValue("token") String token,
-    // @RequestBody CommentRequestDTO request) {
-    // try {
-    // return ResponseEntity.ok(service.createComment(botid, token,
-    // request.getContent()));
-    // } catch (Exception e) {
-    // return ResponseEntity.status(HttpStatus.NOT_FOUND)
-    // .body(new ResponseDTO(false, e.getMessage()));
-    // }
-    // }
+    @PostMapping("/{botid}/comments")
+    public ResponseEntity<Object> createComment(
+            @PathVariable Integer botid,
+            @RequestBody CommentRequestDTO request,
+            @RequestHeader(name = "X-User-Id") Integer userId) {
+        try {
+            return ResponseEntity.ok(service.createComment(userId, botid, request.getContent()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(false, e.getMessage()));
+        }
+    }
 
 }

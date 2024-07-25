@@ -98,19 +98,19 @@ public interface BotService {
 
     /**s
      * @brief 获取机器人评论
-     * @param id 机器人id
+     * @param botId 机器人id
      * @param page 页码
      * @param pageSize 每页大小
      * @return 机器人评论
      */
-    GetCommentsOkResponseDTO getComments(Integer id, Integer page, Integer pageSize);
+    GetCommentsOkResponseDTO getComments(Integer botId, Integer page, Integer pageSize);
 
     /**
      * @brief 创建评论
-     * @param id 机器人id
-     * @param token 用户token
+     * @param userId 用户id
+     * @param botId 机器人id
      * @param content 评论内容
      * @return 创建结果
      */
-    ResponseDTO createComment(Integer id, String token, String content) ;
+    ResponseDTO createComment(Integer userId, Integer botId, String content);
 }
