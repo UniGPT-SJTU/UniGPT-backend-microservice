@@ -16,10 +16,14 @@ public class BotController {
         this.service = service;
     }
 
-    @PostMapping
-    public ResponseEntity<ResponseDTO> createBot(@RequestBody BotEditInfoDTO dto) {
+    @PostMapping("/{botid}")
+    public ResponseEntity<ResponseDTO> createBot(
+            @RequestBody BotEditInfoDTO dto,
+            @PathVariable Integer botid,
+            @RequestHeader(name = "X-User-Id") Integer userId
+    ) {
         try {
-            return ResponseEntity.ok(service.createBot(dto));
+            return ResponseEntity.ok(service.createBot(dto, botid, userId));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST)
                     .body(new ResponseDTO(false, e.getMessage()));
