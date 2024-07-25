@@ -26,9 +26,6 @@ public class User {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "email")
-    private String email;
-
     @Column(name = "avatar")
     private String avatar;
 
@@ -39,10 +36,6 @@ public class User {
     @ManyToMany
     @JoinTable(name = "user_star_bot", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "bot_id"))
     private List<Bot> starBots;
-
-    @ManyToMany
-    @JoinTable(name = "user_used_bot", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "bot_id"))
-    private List<Bot> usedBots;
 
     @OneToMany(mappedBy = "creator")
     private List<Bot> createBots;
