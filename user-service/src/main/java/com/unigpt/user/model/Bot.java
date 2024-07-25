@@ -35,12 +35,6 @@ public class Bot {
     @Column(name = "description", columnDefinition = "VARCHAR(255)")
     private String description;
 
-    @ManyToMany(mappedBy = "likeBots")
-    private List<User> likeUsers;
-
-    @ManyToMany(mappedBy = "starBots")
-    private List<User> starUsers;
-
     @ManyToOne
     @JoinColumn(name = "creator_id")
     private User creator;
@@ -93,10 +87,6 @@ public class Bot {
 //    }
 
     public Bot() {
-        // not used
-        this.likeUsers = new ArrayList<>();
-        this.starUsers = new ArrayList<>();
-//        this.comments = new ArrayList<>();
         this.creator = new User();
     }
 }
