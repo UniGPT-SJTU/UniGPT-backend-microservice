@@ -173,7 +173,7 @@ public class BotServiceImpl implements BotService {
         // 根据id获取bot
         Bot updatedBot = botRepository.findById(botId)
                 .orElseThrow(() -> new NoSuchElementException("Bot not found for ID: " + botId));
-        if(!updatedBot.getCreator().getId().equals(userId) && !isAdmin) {
+        if (!updatedBot.getCreator().getId().equals(userId) && !isAdmin) {
             throw new IllegalArgumentException("User not authorized to update bot");
         }
 
@@ -188,7 +188,7 @@ public class BotServiceImpl implements BotService {
 
         List<Plugin> plugins = dto.getPlugins().stream()
                 .map(plugin -> pluginRepository.findById(plugin.getId())
-                .orElseThrow(() -> new NoSuchElementException("Plugin not found for ID: " + plugin.getId())))
+                        .orElseThrow(() -> new NoSuchElementException("Plugin not found for ID: " + plugin.getId())))
                 .collect(Collectors.toList());
 
         // 更新bot信息并保存到数据库
@@ -201,27 +201,81 @@ public class BotServiceImpl implements BotService {
     }
 
     @Override
-    public ResponseDTO likeBot(Integer id, String token) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'likeBot'");
+    public ResponseDTO likeBot(Integer userId, Integer botId) {
+        Bot bot = botRepository.findById(botId)
+                .orElseThrow(() -> new NoSuchElementException("Bot not found for ID: " + botId));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User not found for ID: " + userId));
+        if (bot.getLikeUsers().contains(user)) {
+            return new ResponseDTO(false, "Bot already liked");
+        }
+
+        bot.setLikeNumber(bot.getLikeNumber() + 1);
+        bot.getLikeUsers().add(user);
+        user.getLikeBots().add(bot);
+
+        botRepository.save(bot);
+        userRepository.save(user);
+        return new ResponseDTO(true, "Bot liked successfully");
     }
 
     @Override
-    public ResponseDTO dislikeBot(Integer id, String token) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'dislikeBot'");
+    public ResponseDTO dislikeBot(Integer userId, Integer botId) {
+        Bot bot = botRepository.findById(botId)
+                .orElseThrow(() -> new NoSuchElementException("Bot not found for ID: " + botId));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User not found for ID: " + userId));
+
+        if (!bot.getLikeUsers().contains(user)) {
+            return new ResponseDTO(false, "Bot not liked yet");
+        }
+
+        bot.setLikeNumber(bot.getLikeNumber() - 1);
+        bot.getLikeUsers().remove(user);
+        user.getLikeBots().remove(bot);
+
+        botRepository.save(bot);
+        userRepository.save(user);
+        return new ResponseDTO(true, "Bot disliked successfully");
     }
 
     @Override
-    public ResponseDTO starBot(Integer id, String token) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'starBot'");
+    public ResponseDTO starBot(Integer userId, Integer botId) {
+        Bot bot = botRepository.findById(botId)
+                .orElseThrow(() -> new NoSuchElementException("Bot not found for ID: " + botId));
+
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User not found for ID: " + userId));
+        if (bot.getStarUsers().contains(user)) {
+            return new ResponseDTO(false, "Bot already starred");
+        }
+
+        bot.setStarNumber(bot.getStarNumber() + 1);
+        bot.getStarUsers().add(user);
+        user.getStarBots().add(bot);
+        botRepository.save(bot);
+        userRepository.save(user);
+        return new ResponseDTO(true, "Bot starred successfully");
     }
 
     @Override
-    public ResponseDTO unstarBot(Integer id, String token) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'unstarBot'");
+    public ResponseDTO unstarBot(Integer userId, Integer botId) {
+        Bot bot = botRepository.findById(botId)
+                .orElseThrow(() -> new NoSuchElementException("Bot not found for ID: " + botId));
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User not found for ID: " + userId));
+        if (!bot.getStarUsers().contains(user)) {
+            return new ResponseDTO(false, "Bot not starred yet");
+        }
+
+        bot.setStarNumber(bot.getStarNumber() - 1);
+        bot.getStarUsers().remove(user);
+        user.getStarBots().remove(bot);
+
+        botRepository.save(bot);
+        userRepository.save(user);
+        return new ResponseDTO(true, "Bot unstarred successfully");
     }
 
     @Override

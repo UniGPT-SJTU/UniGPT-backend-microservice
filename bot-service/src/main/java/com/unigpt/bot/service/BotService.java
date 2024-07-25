@@ -65,36 +65,36 @@ public interface BotService {
     ResponseDTO updateBot(Integer userId, Boolean isAdmin, Integer botId, BotEditInfoDTO dto);
 
     /**
-     * @brief 删除机器人
-     * @param id 机器人id
-     * @param token 用户token
+     * @brief 点赞机器人
+     * @param userId 用户id
+     * @param botId 机器人id
      * @return 删除结果
      */
-    ResponseDTO likeBot(Integer id, String token);
+    ResponseDTO likeBot(Integer userId, Integer botId);
 
     /**
      * @brief 取消点赞机器人
-     * @param id 机器人id
-     * @param token 用户token
+     * @param userId 用户id
+     * @param botId 机器人id
      * @return 取消点赞结果
      */
-    ResponseDTO dislikeBot(Integer id, String token);
+    ResponseDTO dislikeBot(Integer userId, Integer botId);
 
     /**
      * @brief 收藏机器人
-     * @param id 机器人id
-     * @param token 用户token
+     * @param userId 用户id
+     * @param botId 机器人id
      * @return 收藏结果
      */
-    ResponseDTO starBot(Integer id, String token);
+    ResponseDTO starBot(Integer userId, Integer botId);
 
     /**
      * @brief 取消收藏机器人
-     * @param id 机器人id
-     * @param token 用户token
+     * @param userId 用户id
+     * @param botId 机器人id
      * @return 取消收藏结果
      */
-    ResponseDTO unstarBot(Integer id, String token);
+    ResponseDTO unstarBot(Integer userId, Integer botId);
 
     /**s
      * @brief 获取机器人评论

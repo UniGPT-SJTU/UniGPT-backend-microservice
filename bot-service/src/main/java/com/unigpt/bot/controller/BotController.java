@@ -85,49 +85,53 @@ public class BotController {
         }
     }
 
-    // @PutMapping("/{id}/likes")
-    // public ResponseEntity<Object> likeBot(@PathVariable Integer id,
-    // @CookieValue("token") String token){
-    // try {
-    // return ResponseEntity.ok(service.likeBot(id, token));
-    // } catch (Exception e) {
-    // return ResponseEntity.status(HttpStatus.NOT_FOUND)
-    // .body(new ResponseDTO(false, e.getMessage()));
-    // }
-    // }
+    @PutMapping("/{botId}/likes")
+    public ResponseEntity<Object> likeBot(
+            @PathVariable Integer botId,
+            @RequestHeader(name = "X-User-Id") Integer userId) {
+        try {
+            return ResponseEntity.ok(service.likeBot(userId, botId));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(false, e.getMessage()));
+        }
+    }
 
-    // @DeleteMapping("/{id}/likes")
-    // public ResponseEntity<Object> dislikeBot(@PathVariable Integer id,
-    // @CookieValue("token") String token) {
-    // try {
-    // return ResponseEntity.ok(service.dislikeBot(id, token));
-    // } catch (Exception e) {
-    // return ResponseEntity.status(HttpStatus.NOT_FOUND)
-    // .body(new ResponseDTO(false, e.getMessage()));
-    // }
-    // }
+    @DeleteMapping("/{botId}/likes")
+    public ResponseEntity<Object> dislikeBot(
+            @PathVariable Integer botId,
+            @RequestHeader(name = "X-User-Id") Integer userId) {
+        try {
+            return ResponseEntity.ok(service.dislikeBot(userId, botId));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(false, e.getMessage()));
+        }
+    }
 
-    // @PutMapping("/{id}/stars")
-    // public ResponseEntity<Object> starBot(@PathVariable Integer id,
-    // @CookieValue("token") String token){
-    // try {
-    // return ResponseEntity.ok(service.starBot(id, token));
-    // } catch (Exception e) {
-    // return ResponseEntity.status(HttpStatus.NOT_FOUND)
-    // .body(new ResponseDTO(false, e.getMessage()));
-    // }
-    // }
+    @PutMapping("/{botId}/stars")
+    public ResponseEntity<Object> starBot(
+            @PathVariable Integer botId,
+            @RequestHeader(name = "X-User-Id") Integer userId) {
+        try {
+            return ResponseEntity.ok(service.starBot(userId, botId));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(false, e.getMessage()));
+        }
+    }
 
-    // @DeleteMapping("/{id}/stars")
-    // public ResponseEntity<Object> unstarBot(@PathVariable Integer id,
-    // @CookieValue("token") String token){
-    // try {
-    // return ResponseEntity.ok(service.unstarBot(id, token));
-    // } catch (Exception e) {
-    // return ResponseEntity.status(HttpStatus.NOT_FOUND)
-    // .body(new ResponseDTO(false, e.getMessage()));
-    // }
-    // }
+    @DeleteMapping("/{botId}/stars")
+    public ResponseEntity<Object> unstarBot(
+            @PathVariable Integer botId,
+            @RequestHeader(name = "X-User-Id") Integer userId) {
+        try {
+            return ResponseEntity.ok(service.unstarBot(userId, botId));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(false, e.getMessage()));
+        }
+    }
 
     // @GetMapping("/{botid}/comments")
     // public ResponseEntity<Object> getComments(@PathVariable Integer botid,
