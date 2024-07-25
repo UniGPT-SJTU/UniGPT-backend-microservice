@@ -48,20 +48,21 @@ public interface BotService {
 
     /**
      * @brief 创建机器人
+     * @param userId 用户id
      * @param dto 机器人编辑信息
-     * @param token 用户token
      * @return 创建结果
      */
-    ResponseDTO createBot(BotEditInfoDTO dto, String token) throws Exception;
+    ResponseDTO createBot(Integer userId, BotEditInfoDTO dto) throws Exception;
 
     /**
      * @brief 更新机器人
-     * @param id 机器人id
+     * @param userId 用户id
+     * @param isAdmin 是否为管理员
+     * @param botId 机器人id
      * @param dto 机器人编辑信息
-     * @param token 用户token
      * @return 更新结果
      */
-    ResponseDTO updateBot(Integer id, BotEditInfoDTO dto, String token);
+    ResponseDTO updateBot(Integer userId, Boolean isAdmin, Integer botId, BotEditInfoDTO dto);
 
     /**
      * @brief 删除机器人

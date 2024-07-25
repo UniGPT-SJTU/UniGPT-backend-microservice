@@ -1,8 +1,10 @@
 package com.unigpt.bot.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.unigpt.bot.LLMArgs.LLMArgs;
+import com.unigpt.bot.dto.BotEditInfoDTO;
 
 import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
@@ -85,44 +87,48 @@ public class Bot {
     @JoinTable(name = "bot_use_plugin", joinColumns = @JoinColumn(name = "bot_id"), inverseJoinColumns = @JoinColumn(name = "plugin_id"))
     private List<Plugin> plugins;
 
-    // public Bot(BotEditInfoDTO dto, User creator) {
-    //     this.name = dto.getName();
-    //     this.avatar = dto.getAvatar();
-    //     this.description = dto.getDescription();
-    //     this.isPublished = dto.isPublished();
-    //     this.detail = dto.getDetail();
-    //     this.photos = dto.getPhotos();
-    //     this.isPrompted = dto.isPrompted();
-    //     this.promptKeys = dto.getPromptKeys();
-    //     this.likeNumber = 0;
-    //     this.starNumber = 0;
-    //     this.likeUsers = new ArrayList<>();
-    //     this.starUsers = new ArrayList<>();
-    //     this.creator = creator;
-    //     this.comments = new ArrayList<>();
+    public Bot() {
+        // not used
+    }
+    public Bot(BotEditInfoDTO dto, User creator) {
+        // 创建机器人的构造函数
+        this.name = dto.getName();
+        this.avatar = dto.getAvatar();
+        this.description = dto.getDescription();
+        this.isPublished = dto.isPublished();
+        this.detail = dto.getDetail();
+        this.photos = dto.getPhotos();
+        this.isPrompted = dto.isPrompted();
+        this.promptKeys = dto.getPromptKeys();
+        this.likeNumber = 0;
+        this.starNumber = 0;
+        this.likeUsers = new ArrayList<>();
+        this.starUsers = new ArrayList<>();
+        this.creator = creator;
+        this.comments = new ArrayList<>();
 
-    //     this.llmArgs = LLMArgs.builder()
-    //             .baseModelType(BaseModelType.fromValue(dto.getBaseModelAPI()))
-    //             .temperature(dto.getTemperature()).build();
+        this.llmArgs = LLMArgs.builder()
+                .baseModelType(BaseModelType.fromValue(dto.getBaseModelAPI()))
+                .temperature(dto.getTemperature()).build();
 
-    // }
+    }
 
-    // public void updateInfo(BotEditInfoDTO dto) {
-    //     this.name = dto.getName();
-    //     this.avatar = dto.getAvatar();
-    //     this.description = dto.getDescription();
-    //     this.isPublished = dto.isPublished();
-    //     this.detail = dto.getDetail();
-    //     this.photos = dto.getPhotos();
-    //     this.isPrompted = dto.isPrompted();
-    //     this.promptKeys = dto.getPromptKeys();
+    public void updateInfo(BotEditInfoDTO dto) {
+        this.name = dto.getName();
+        this.avatar = dto.getAvatar();
+        this.description = dto.getDescription();
+        this.isPublished = dto.isPublished();
+        this.detail = dto.getDetail();
+        this.photos = dto.getPhotos();
+        this.isPrompted = dto.isPrompted();
+        this.promptKeys = dto.getPromptKeys();
 
-    //     this.llmArgs = LLMArgs
-    //             .builder()
-    //             .baseModelType(BaseModelType.fromValue(dto.getBaseModelAPI()))
-    //             .temperature(dto.getTemperature())
-    //             .build();
-    // }
+        this.llmArgs = LLMArgs
+                .builder()
+                .baseModelType(BaseModelType.fromValue(dto.getBaseModelAPI()))
+                .temperature(dto.getTemperature())
+                .build();
+    }
 
     // public Bot() {
     //     // not used

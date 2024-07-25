@@ -1,12 +1,14 @@
 package com.unigpt.bot.controller;
 
+import java.util.NoSuchElementException;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import com.unigpt.bot.dto.BotEditInfoDTO;
 import com.unigpt.bot.dto.ResponseDTO;
 import com.unigpt.bot.service.BotService;
-
 
 @RestController
 @RequestMapping("/internal/bots")
@@ -54,30 +56,34 @@ public class BotController {
         }
     }
 
-    // @PostMapping
-    // public ResponseEntity<ResponseDTO> createBot(@RequestBody BotEditInfoDTO dto,
-    // @CookieValue("token") String token) {
-    // try {
-    // return ResponseEntity.ok(service.createBot(dto, token));
-    // } catch (Exception e) {
-    // return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-    // .body(new ResponseDTO(false, e.getMessage()));
-    // }
-    // }
+    @PostMapping
+    public ResponseEntity<ResponseDTO> createBot(
+            @RequestBody BotEditInfoDTO dto,
+            @RequestHeader(name = "X-User-Id") Integer userId) {
+        try {
+            return ResponseEntity.ok(service.createBot(userId, dto));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseDTO(false, e.getMessage()));
+        }
+    }
 
-    // @PutMapping("/{id}")
-    // public ResponseEntity<Object> updateBot(@PathVariable Integer id,
-    // @RequestBody BotEditInfoDTO dto, @CookieValue("token") String token) {
-    // try {
-    // return ResponseEntity.ok(service.updateBot(id, dto, token));
-    // } catch (NoSuchElementException e) {
-    // return ResponseEntity.status(HttpStatus.NOT_FOUND)
-    // .body(new ResponseDTO(false, e.getMessage()));
-    // } catch (Exception e) {
-    // return ResponseEntity.status(HttpStatus.BAD_REQUEST)
-    // .body(new ResponseDTO(false, e.getMessage()));
-    // }
-    // }
+    @PutMapping("/{botId}")
+    public ResponseEntity<Object> updateBot(
+            @PathVariable Integer botId,
+            @RequestBody BotEditInfoDTO dto,
+            @RequestHeader(name = "X-User-Id") Integer userId,
+            @RequestHeader(name = "X-Is-Admin") Boolean isAdmin) {
+        try {
+            return ResponseEntity.ok(service.updateBot(userId, isAdmin, botId, dto));
+        } catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(false, e.getMessage()));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseDTO(false, e.getMessage()));
+        }
+    }
 
     // @PutMapping("/{id}/likes")
     // public ResponseEntity<Object> likeBot(@PathVariable Integer id,

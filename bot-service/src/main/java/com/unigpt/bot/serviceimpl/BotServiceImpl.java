@@ -1,8 +1,11 @@
 package com.unigpt.bot.serviceimpl;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.stream.Collectors;
 
+import org.apache.coyote.BadRequestException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -15,8 +18,13 @@ import com.unigpt.bot.dto.GetBotsOkResponseDTO;
 import com.unigpt.bot.dto.GetCommentsOkResponseDTO;
 import com.unigpt.bot.dto.ResponseDTO;
 import com.unigpt.bot.model.Bot;
+import com.unigpt.bot.model.ChatType;
+import com.unigpt.bot.model.Plugin;
+import com.unigpt.bot.model.PromptChat;
 import com.unigpt.bot.model.User;
 import com.unigpt.bot.repository.BotRepository;
+import com.unigpt.bot.repository.PluginRepository;
+import com.unigpt.bot.repository.PromptChatRepository;
 import com.unigpt.bot.repository.UserRepository;
 import com.unigpt.bot.service.BotService;
 
@@ -25,10 +33,18 @@ public class BotServiceImpl implements BotService {
 
     private final BotRepository botRepository;
     private final UserRepository userRepository;
+    private final PromptChatRepository promptChatRepository;
+    private final PluginRepository pluginRepository;
 
-    public BotServiceImpl(BotRepository botRepository, UserRepository userRepository) {
+    public BotServiceImpl(
+            BotRepository botRepository,
+            UserRepository userRepository,
+            PromptChatRepository promptChatRepository,
+            PluginRepository pluginRepository) {
         this.botRepository = botRepository;
         this.userRepository = userRepository;
+        this.promptChatRepository = promptChatRepository;
+        this.pluginRepository = pluginRepository;
     }
 
     private List<BotBriefInfoDTO> getBots(String q, Pageable pageable, String order) {
@@ -105,15 +121,83 @@ public class BotServiceImpl implements BotService {
     }
 
     @Override
-    public ResponseDTO createBot(BotEditInfoDTO dto, String token) throws Exception {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'createBot'");
+    public ResponseDTO createBot(Integer userId, BotEditInfoDTO dto) throws Exception {
+        // 根据token获取用户
+        User creatorUser = userRepository.findById(userId)
+                .orElseThrow(() -> new NoSuchElementException("User not found for ID: " + userId));
+
+        int promptChatSize = dto.getPromptChats().size();
+        if (promptChatSize < 1) {
+            // 提示词模板列表不能为空
+            throw new BadRequestException("Prompt chats should not be empty");
+        }
+
+        if (dto.getPromptChats().get(promptChatSize - 1).getType() != ChatType.USER) {
+            // 最后一个提示词模板应该是用户类型
+            throw new BadRequestException("Last prompt chat should be user type");
+        }
+
+        // 创建promptChats列表并保存到数据库
+        List<PromptChat> promptChats = dto
+                .getPromptChats()
+                .stream()
+                .map(PromptChat::new)
+                .collect(Collectors.toList());
+        promptChatRepository.saveAll(promptChats);
+
+        // 创建bot的plugin列表
+        // 对于每个plugin, 获取其中的id,使用findById方法获取plugin对象, 如果不存在则抛出异常
+        // 如果存在则将plugin对象加入到plugin列表中
+        List<Plugin> plugins = dto.getPlugins().stream()
+                .map(plugin -> pluginRepository.findById(plugin.getId())
+                        .orElseThrow(() -> new NoSuchElementException("Plugin not found for ID: " + plugin.getId())))
+                .collect(Collectors.toList());
+
+        // 创建bot并保存到数据库
+        Bot newBot = new Bot(dto, creatorUser);
+        newBot.setPromptChats(promptChats);
+        newBot.setPlugins(plugins);
+        botRepository.save(newBot);
+
+        // 更新用户的createBots列表
+        creatorUser.getCreateBots().add(newBot);
+        userRepository.save(creatorUser);
+
+        String botId = String.valueOf(newBot.getId());
+
+        return new ResponseDTO(true, botId);
     }
 
     @Override
-    public ResponseDTO updateBot(Integer id, BotEditInfoDTO dto, String token) {
-        // TODO Auto-generated method stub
-        throw new UnsupportedOperationException("Unimplemented method 'updateBot'");
+    public ResponseDTO updateBot(Integer userId, Boolean isAdmin, Integer botId, BotEditInfoDTO dto) {
+        // 根据id获取bot
+        Bot updatedBot = botRepository.findById(botId)
+                .orElseThrow(() -> new NoSuchElementException("Bot not found for ID: " + botId));
+        if(!updatedBot.getCreator().getId().equals(userId) && !isAdmin) {
+            throw new IllegalArgumentException("User not authorized to update bot");
+        }
+
+        // 删除原有的promptChats列表
+        List<PromptChat> oldPromptChats = new ArrayList<>(updatedBot.getPromptChats());
+        updatedBot.getPromptChats().clear();
+        promptChatRepository.deleteAll(oldPromptChats);
+
+        // 创建promptChats列表并保存到数据库
+        List<PromptChat> promptChats = dto.getPromptChats().stream().map(PromptChat::new).collect(Collectors.toList());
+        promptChatRepository.saveAll(promptChats);
+
+        List<Plugin> plugins = dto.getPlugins().stream()
+                .map(plugin -> pluginRepository.findById(plugin.getId())
+                .orElseThrow(() -> new NoSuchElementException("Plugin not found for ID: " + plugin.getId())))
+                .collect(Collectors.toList());
+
+        // 更新bot信息并保存到数据库
+        updatedBot.updateInfo(dto);
+        updatedBot.setPromptChats(promptChats);
+        updatedBot.setPlugins(plugins);
+        botRepository.save(updatedBot);
+
+        return new ResponseDTO(true, "Bot updated successfully");
     }
 
     @Override

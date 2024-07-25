@@ -1,5 +1,7 @@
 package com.unigpt.bot.model;
 
+import com.unigpt.bot.dto.PromptChatDTO;
+
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -20,6 +22,11 @@ public class PromptChat {
     public PromptChat(ChatType type, String content) {
         this.type = type;
         this.content = content;
+    }
+
+    public PromptChat(PromptChatDTO dto) {
+        this.type = dto.getType();
+        this.content = dto.getContent();
     }
 
     public PromptChat() {
