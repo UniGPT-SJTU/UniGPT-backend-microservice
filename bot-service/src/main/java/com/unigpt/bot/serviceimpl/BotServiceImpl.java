@@ -12,6 +12,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.unigpt.bot.client.UserServiceClient;
 import com.unigpt.bot.dto.BotBriefInfoDTO;
 import com.unigpt.bot.dto.BotDetailInfoDTO;
 import com.unigpt.bot.dto.BotEditInfoDTO;
@@ -41,17 +42,22 @@ public class BotServiceImpl implements BotService {
     private final PluginRepository pluginRepository;
     private final CommentRepository commentRepository;
 
+    private final UserServiceClient userServiceClient;
+
     public BotServiceImpl(
             BotRepository botRepository,
             UserRepository userRepository,
             PromptChatRepository promptChatRepository,
             PluginRepository pluginRepository,
-            CommentRepository commentRepository) {
+            CommentRepository commentRepository,
+            UserServiceClient userServiceClient) {
+
         this.botRepository = botRepository;
         this.userRepository = userRepository;
         this.promptChatRepository = promptChatRepository;
         this.pluginRepository = pluginRepository;
         this.commentRepository = commentRepository;
+        this.userServiceClient = userServiceClient;
     }
 
     private List<BotBriefInfoDTO> getBots(String q, Pageable pageable, String order) {
@@ -104,12 +110,8 @@ public class BotServiceImpl implements BotService {
         if (bot.getIsPublished() || asCreator || isAdmin) {
             return new BotDetailInfoDTO(bot, user, isAdmin);
         } else {
-            // TODO: 将机器人从用户的 usedBots 列表中删除
-            // // 如果均不是，检查是否是 bot 是否在用户的 usedBots 列表中，如有则删除
-            // if (user.getUsedBots().contains(bot)) {
-            // user.getUsedBots().remove(bot);
-            // userRepository.save(user);
-            // }
+            // 检查是否是 bot 是否在用户的 usedBots 列表中，如有则删除
+            userServiceClient.deleteBotFromUsedList(botId, userId);
             throw new NoSuchElementException("Bot not published for ID: " + botId);
         }
     }
