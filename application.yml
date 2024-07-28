@@ -1,0 +1,9 @@
+services:
+  bot-service:
+    url: http://localhost:8081
+  chat-service:
+    url: http://localhost:8082
+  order-service:
+    url: http://localhost:8082
+  plugin-service:
+    url: http://localhost:8083
