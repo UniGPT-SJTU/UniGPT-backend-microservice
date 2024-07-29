@@ -5,7 +5,7 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestParam;
 
-@FeignClient(name = "user-service", url = "http://localhost:8082/internal")
+@FeignClient(name = "user-service", url = "${user-service.url}/internal")
 public interface UserServiceClient {
     
     @PutMapping("/users/used-bots/{botId}")

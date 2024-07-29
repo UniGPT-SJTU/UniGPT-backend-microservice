@@ -7,7 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestHeader;
 
 @Component
-@FeignClient(name = "user-service", url = "http://localhost:8082/internal")
+@FeignClient(name = "user-service", url = "${services.user-service.url}/internal")
 public interface UserServiceClient {
 
     @DeleteMapping("/users/used-bots/{botId}")

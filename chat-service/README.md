@@ -23,22 +23,3 @@ export POSTGRES_PASSWORD="bleaves" # (可选，默认值为"bleaves")
 export HTTP_PROXY_HOST="127.0.0.1" # (可选，默认值为"127.0.0.1")
 export HTTP_PROXY_PORT="7890" # (可选，默认值为"7890")
 ```
-## 运行
-Linux 和 MacOS:
-```
-./mvnw spring-boot:run
-``` 
-Windows:
-```
-./mvnw.cmd spring-boot:run
-```
-后端URL为http://localhost:8080
-## 构建
-Linux 和 MacOS:
-```
-./mvnw package
-```
-Windows:
-```
-./mvnw.cmd package
-```

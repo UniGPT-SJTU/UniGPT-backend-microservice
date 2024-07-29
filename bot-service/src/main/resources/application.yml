@@ -16,3 +16,7 @@ logging:
 
 server:
    port: 8080
+
+services:
+  user-service:
+    url: ${USER_SERVICE_URL}
