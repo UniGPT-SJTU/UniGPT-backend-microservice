@@ -1,9 +1,0 @@
-services:
-  user-service:
-    url: http://localhost:8082
-  bot-service:
-    url: http://localhost:8083
-  chat-service:
-    url: http://localhost:8084
-  plugin-service:
-    url: http://localhost:8085
