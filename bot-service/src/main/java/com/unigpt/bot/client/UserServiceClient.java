@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.RequestHeader;
 public interface UserServiceClient {
 
     @DeleteMapping("/users/used-bots/{botId}")
-    public void deleteBotFromUsedList(
+    void deleteBotFromUsedList(
             @PathVariable Integer botId,
             @RequestHeader(name = "X-User-Id") Integer userId);
 }
