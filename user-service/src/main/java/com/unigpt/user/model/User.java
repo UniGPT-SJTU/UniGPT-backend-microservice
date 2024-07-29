@@ -43,14 +43,6 @@ public class User {
     private String description;
 
     @ManyToMany
-    @JoinTable(name = "user_like_bot", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "bot_id"))
-    private List<Bot> likeBots;
-
-    @ManyToMany
-    @JoinTable(name = "user_star_bot", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "bot_id"))
-    private List<Bot> starBots;
-
-    @ManyToMany
     @JoinTable(name = "user_used_bot", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "bot_id"))
     private List<Bot> usedBots;
 
@@ -100,8 +92,6 @@ public class User {
 
     public User() {
         // not used
-        this.likeBots = new ArrayList<>();
-        this.starBots = new ArrayList<>();
         this.usedBots = new ArrayList<>();
         this.createBots = new ArrayList<>();
 
