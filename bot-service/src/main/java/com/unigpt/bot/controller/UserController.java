@@ -8,6 +8,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestHeader;
@@ -26,6 +27,20 @@ public class UserController {
 
     public UserController(UserService service) {
         this.service = service;
+    }
+
+    @PostMapping("/{id}")
+    public ResponseEntity<Object> createUser(
+            @PathVariable Integer id,
+            @RequestBody UpdateUserInfoRequestDTO updateUserInfoRequestDTO) {
+        try {
+            service.createUser(id, updateUserInfoRequestDTO);
+            return ResponseEntity.ok(new ResponseDTO(true, "Create user successfully"));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST)
+                    .body(new ResponseDTO(false, e.getMessage()));
+        }
+
     }
 
     @PutMapping("/{id}")
