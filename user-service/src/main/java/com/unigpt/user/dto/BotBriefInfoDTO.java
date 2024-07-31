@@ -23,7 +23,7 @@ public class BotBriefInfoDTO {
     }
 
     public BotBriefInfoDTO(Bot bot, User user) {
-        this.id = bot.getId();
+        this.id = bot.getTrueId();
         this.name = bot.getName();
         this.description = bot.getDescription();
         this.avatar = bot.getAvatar();
