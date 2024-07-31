@@ -1,6 +1,7 @@
 package com.unigpt.user.controller;
 
 import com.unigpt.user.dto.GetBotsOkResponseDTO;
+import com.unigpt.user.dto.ResponseDTO;
 import com.unigpt.user.dto.UserUpdateDTO;
 import com.unigpt.user.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.security.sasl.AuthenticationException;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @RestController
@@ -68,6 +70,23 @@ public class UserController {
             return ResponseEntity.status(404).body(e.getMessage());
         }
     }
+
+    @GetMapping("/{userid}/used-bots")
+    public ResponseEntity<Object> getUsedBots(
+            @PathVariable Integer userid,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "20") Integer pagesize) {
+        try {
+            // 使用userid和token
+            return ResponseEntity.ok(service.getUsedBots(userid, page, pagesize));
+        }
+        catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(false, e.getMessage()));
+        }
+    }
+
+    @PutMapping("/used-bots/{botId}")
 
 
 }

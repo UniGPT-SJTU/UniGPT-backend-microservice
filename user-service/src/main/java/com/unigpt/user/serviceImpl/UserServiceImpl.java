@@ -1,14 +1,14 @@
 package com.unigpt.user.serviceImpl;
 
-import com.unigpt.user.dto.UserBriefInfoDTO;
-import com.unigpt.user.dto.UserUpdateDTO;
+import com.unigpt.user.dto.*;
 import com.unigpt.user.model.User;
+import com.unigpt.user.model.Bot;
 import com.unigpt.user.repository.UserRepository;
 import com.unigpt.user.service.UserService;
-import com.unigpt.user.dto.GetUsersOkResponseDTO;
 import com.unigpt.user.utils.PaginationUtils;
 import org.springframework.stereotype.Service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
@@ -91,24 +91,19 @@ public class UserServiceImpl implements UserService {
     }
 
 
-//    public GetBotsOkResponseDTO getUsedBots(Integer userid, String token, Integer page, Integer pageSize)
-//            throws AuthenticationException {
-//        User user = findUserById(userid);
-//
-//        if (!authService.getUserByToken(token).equals(user)) {
-//            throw new AuthenticationException("Unauthorized to get used bots");
-//        }
-//
-//        List<Bot> usedBots = user.getUsedBots();
-//        Collections.reverse(usedBots);
-//
-//        List<BotBriefInfoDTO> bots = usedBots.stream()
-//                .map(bot -> new BotBriefInfoDTO(bot.getId(), bot.getName(), bot.getDescription(), bot.getAvatar(),
-//                        bot.getCreator().equals(user), user.getAsAdmin()))
-//                .collect(Collectors.toList());
-//
-//        return new GetBotsOkResponseDTO(bots.size(), PaginationUtils.paginate(bots, page, pageSize));
-//    }
+    public GetBotsOkResponseDTO getUsedBots(Integer userid, Integer page, Integer pageSize) {
+        User user = findUserById(userid);
+
+        List<Bot> usedBots = user.getUsedBots();
+        Collections.reverse(usedBots);
+
+        List<BotBriefInfoDTO> bots = usedBots.stream()
+                .map(bot -> new BotBriefInfoDTO(bot.getTrueId(), bot.getName(), bot.getDescription(), bot.getAvatar(),
+                        bot.getCreator().equals(user)))
+                .collect(Collectors.toList());
+
+        return new GetBotsOkResponseDTO(bots.size(), PaginationUtils.paginate(bots, page, pageSize));
+    }
 //
 //    // TODO: 修改BotBriefInfoDTO.asCreator
 //    public GetBotsOkResponseDTO getStarredBots(Integer userid, String token, Integer page, Integer pageSize)

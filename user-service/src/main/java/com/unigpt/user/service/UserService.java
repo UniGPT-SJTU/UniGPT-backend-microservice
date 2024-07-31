@@ -1,6 +1,7 @@
 package com.unigpt.user.service;
 
 
+import com.unigpt.user.dto.GetBotsOkResponseDTO;
 import com.unigpt.user.dto.GetUsersOkResponseDTO;
 import com.unigpt.user.dto.UserUpdateDTO;
 import com.unigpt.user.model.User;
@@ -14,15 +15,13 @@ public interface UserService {
     void updateUserInfo(Integer id, UserUpdateDTO userUpdateDTO);
     GetUsersOkResponseDTO getUsers(Integer page, Integer pagesize, String type, String q);
 
-//    /**
-//     * @brief 获取使用过的机器人
-//     * @param userid   用户id
-//     * @param token    用户token
-//     * @param page     页码
-//     * @param pageSize 每页大小
-//     */
-//    GetBotsOkResponseDTO getUsedBots(Integer userid, String token, Integer page, Integer pageSize)
-//            throws AuthenticationException;
+    /**
+     * @brief 获取使用过的机器人
+     * @param userid   用户id
+     * @param page     页码
+     * @param pageSize 每页大小
+     */
+    GetBotsOkResponseDTO getUsedBots(Integer userid, Integer page, Integer pageSize);
 //
 //    /**
 //     * @brief 获取收藏的机器人
