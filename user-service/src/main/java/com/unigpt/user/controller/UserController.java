@@ -99,4 +99,17 @@ public class UserController {
         }
     }
 
+    @DeleteMapping("/used-bots/{botId}")
+    public ResponseEntity<Object> disuseBot(
+            @PathVariable Integer botId,
+            @RequestHeader(name = "X-User-Id") Integer userId
+    ){
+        try {
+            return ResponseEntity.ok(service.disuseBot(botId, userId));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(false, e.getMessage()));
+        }
+    }
+
 }

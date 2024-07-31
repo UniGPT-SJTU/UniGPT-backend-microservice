@@ -119,6 +119,18 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         return new ResponseDTO(true, "Bot used successfully");
     }
+
+    public ResponseDTO disuseBot(Integer botId, Integer userId){
+        Bot bot = botRepository.findByTrueId(botId).orElseThrow(() -> new NoSuchElementException("Bot not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
+
+        if (!user.getUsedBots().contains(bot)) {
+            return new ResponseDTO(false, "Bot wasn't used");
+        }
+        user.getUsedBots().remove(bot);
+        userRepository.save(user);
+        return new ResponseDTO(true, "Bot disused successfully");
+    }
 //
 //    // TODO: 修改BotBriefInfoDTO.asCreator
 //    public GetBotsOkResponseDTO getStarredBots(Integer userid, String token, Integer page, Integer pageSize)

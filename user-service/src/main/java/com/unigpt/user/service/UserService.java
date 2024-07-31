@@ -25,6 +25,7 @@ public interface UserService {
     GetBotsOkResponseDTO getUsedBots(Integer userid, Integer page, Integer pageSize);
 
     ResponseDTO useBot(Integer botId, Integer userId);
+    ResponseDTO disuseBot(Integer botId, Integer userId);
 //
 //    /**
 //     * @brief 获取收藏的机器人
