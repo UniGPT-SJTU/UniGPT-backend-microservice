@@ -3,6 +3,7 @@ package com.unigpt.user.serviceImpl;
 import com.unigpt.user.dto.*;
 import com.unigpt.user.model.User;
 import com.unigpt.user.model.Bot;
+import com.unigpt.user.repository.BotRepository;
 import com.unigpt.user.repository.UserRepository;
 import com.unigpt.user.service.UserService;
 import com.unigpt.user.utils.PaginationUtils;
@@ -17,15 +18,17 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
-    private final UserRepository repository;
+    private final UserRepository userRepository;
+    private final BotRepository  botRepository;
 
-    public UserServiceImpl(UserRepository repository) {
-        this.repository = repository;
+    public UserServiceImpl(UserRepository userRepository, BotRepository  botRepository) {
+        this.userRepository = userRepository;
+        this.botRepository = botRepository;
     }
 
     public Integer createUser(String email, String account, String name){
         // Check if account already exists
-        Optional<User> optionalUser = repository.findByAccount(account);
+        Optional<User> optionalUser = userRepository.findByAccount(account);
         if (optionalUser.isPresent()) {
             return optionalUser.get().getId();
         }
@@ -34,12 +37,12 @@ public class UserServiceImpl implements UserService {
         user.setEmail(email);
         user.setAccount(account);
         user.setName(name);
-        repository.save(user);
+        userRepository.save(user);
         return user.getId();
     }
 
     public User findUserById(Integer id) {
-        Optional<User> optionalUser = repository.findById(id);
+        Optional<User> optionalUser = userRepository.findById(id);
         if (optionalUser.isEmpty()) {
             throw new NoSuchElementException("User not found for ID: " + id);
         }
@@ -55,13 +58,13 @@ public class UserServiceImpl implements UserService {
         targetUser.setAvatar(userUpdateDTO.getAvatar());
         targetUser.setDescription(userUpdateDTO.getDescription());
 
-        repository.save(targetUser);
+        userRepository.save(targetUser);
     }
 
     // type : id || name
     // q: keyword
     public GetUsersOkResponseDTO getUsers(Integer page, Integer pagesize, String type, String q) {
-        List<User> users = repository.findAll();
+        List<User> users = userRepository.findAll();
         List<UserBriefInfoDTO> userBriefInfoDTOs;
         System.out.println("type: " + type + " q: " + q);
         if (type.equals("id")) {
@@ -103,6 +106,18 @@ public class UserServiceImpl implements UserService {
                 .collect(Collectors.toList());
 
         return new GetBotsOkResponseDTO(bots.size(), PaginationUtils.paginate(bots, page, pageSize));
+    }
+    
+    public ResponseDTO useBot(Integer botId, Integer userId){
+        Bot bot = botRepository.findByTrueId(botId).orElseThrow(() -> new NoSuchElementException("Bot not found"));
+        User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
+
+        if (user.getUsedBots().contains(bot)) {
+            return new ResponseDTO(false, "Bot already used");
+        }
+        user.getUsedBots().add(bot);
+        userRepository.save(user);
+        return new ResponseDTO(true, "Bot used successfully");
     }
 //
 //    // TODO: 修改BotBriefInfoDTO.asCreator
@@ -149,7 +164,7 @@ public class UserServiceImpl implements UserService {
 //        }
 //        User targetUser = findUserById(id);
 //        targetUser.setDisabled(state);
-//        repository.save(targetUser);
+//        userRepository.save(targetUser);
 //    }
 //
 //    public Boolean getBanState(Integer id, String token) throws AuthenticationException {

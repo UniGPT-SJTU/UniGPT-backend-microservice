@@ -87,6 +87,16 @@ public class UserController {
     }
 
     @PutMapping("/used-bots/{botId}")
-
+    public ResponseEntity<Object> useBot(
+            @PathVariable Integer botId,
+            @RequestHeader(name = "X-User-Id") Integer userId
+    ){
+        try {
+            return ResponseEntity.ok(service.useBot(botId, userId));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(false, e.getMessage()));
+        }
+    }
 
 }

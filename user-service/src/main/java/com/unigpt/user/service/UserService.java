@@ -3,6 +3,7 @@ package com.unigpt.user.service;
 
 import com.unigpt.user.dto.GetBotsOkResponseDTO;
 import com.unigpt.user.dto.GetUsersOkResponseDTO;
+import com.unigpt.user.dto.ResponseDTO;
 import com.unigpt.user.dto.UserUpdateDTO;
 import com.unigpt.user.model.User;
 
@@ -22,6 +23,8 @@ public interface UserService {
      * @param pageSize 每页大小
      */
     GetBotsOkResponseDTO getUsedBots(Integer userid, Integer page, Integer pageSize);
+
+    ResponseDTO useBot(Integer botId, Integer userId);
 //
 //    /**
 //     * @brief 获取收藏的机器人
