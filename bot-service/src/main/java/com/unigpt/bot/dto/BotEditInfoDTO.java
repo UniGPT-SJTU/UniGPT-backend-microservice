@@ -41,4 +41,16 @@ public class BotEditInfoDTO {
     public BotEditInfoDTO() {
         // not used
     }
+
+    public UpdateBotInfoRequestToUserServiceDTO toUserServiceRequest() {
+        return new UpdateBotInfoRequestToUserServiceDTO(name, avatar, description);
+    }
+
+    public UpdateBotInfoRequestToChatServiceDTO toChatServiceRequest() {
+        return new UpdateBotInfoRequestToChatServiceDTO(name, avatar, description, isPublished);
+    }
+
+    public UpdateBotInfoRequestToPluginServiceDTO toPluginServiceRequest() {
+        return new UpdateBotInfoRequestToPluginServiceDTO(name, avatar);
+    }
 }

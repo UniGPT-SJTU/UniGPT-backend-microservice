@@ -12,6 +12,8 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 
+import com.unigpt.bot.client.ChatServiceClient;
+import com.unigpt.bot.client.PluginServiceClient;
 import com.unigpt.bot.client.UserServiceClient;
 import com.unigpt.bot.dto.BotBriefInfoDTO;
 import com.unigpt.bot.dto.BotDetailInfoDTO;
@@ -43,6 +45,8 @@ public class BotServiceImpl implements BotService {
     private final CommentRepository commentRepository;
 
     private final UserServiceClient userServiceClient;
+    private final ChatServiceClient chatServiceClient;
+    private final PluginServiceClient pluginServiceClient;
 
     public BotServiceImpl(
             BotRepository botRepository,
@@ -50,7 +54,9 @@ public class BotServiceImpl implements BotService {
             PromptChatRepository promptChatRepository,
             PluginRepository pluginRepository,
             CommentRepository commentRepository,
-            UserServiceClient userServiceClient) {
+            UserServiceClient userServiceClient,
+            ChatServiceClient chatServiceClient,
+            PluginServiceClient pluginServiceClient) {
 
         this.botRepository = botRepository;
         this.userRepository = userRepository;
@@ -58,6 +64,8 @@ public class BotServiceImpl implements BotService {
         this.pluginRepository = pluginRepository;
         this.commentRepository = commentRepository;
         this.userServiceClient = userServiceClient;
+        this.chatServiceClient = chatServiceClient;
+        this.pluginServiceClient = pluginServiceClient;
     }
 
     private List<BotBriefInfoDTO> getBots(String q, Pageable pageable, String order) {
@@ -174,6 +182,11 @@ public class BotServiceImpl implements BotService {
 
         String botId = String.valueOf(newBot.getId());
 
+        // 向微服务发送请求，创建bot的冗余信息
+        userServiceClient.createBot(newBot.getId(), dto.toUserServiceRequest());
+        chatServiceClient.createBot(newBot.getId(), dto.toChatServiceRequest());
+        pluginServiceClient.createBot(userId, dto.toPluginServiceRequest());
+
         return new ResponseDTO(true, botId);
     }
 
@@ -205,6 +218,11 @@ public class BotServiceImpl implements BotService {
         updatedBot.setPromptChats(promptChats);
         updatedBot.setPlugins(plugins);
         botRepository.save(updatedBot);
+
+        // 向微服务发送请求，更新bot的冗余信息
+        userServiceClient.updateBot(botId, dto.toUserServiceRequest());
+        chatServiceClient.updateBot(botId, dto.toChatServiceRequest());
+        pluginServiceClient.updateBot(botId, dto.toPluginServiceRequest());
 
         return new ResponseDTO(true, "Bot updated successfully");
     }
@@ -290,11 +308,11 @@ public class BotServiceImpl implements BotService {
     @Override
     public GetCommentsOkResponseDTO getComments(Integer botId, Integer page, Integer pageSize) {
         botRepository.findById(botId)
-            .orElseThrow(() -> new NoSuchElementException("Bot not found for ID: " + botId));
+                .orElseThrow(() -> new NoSuchElementException("Bot not found for ID: " + botId));
 
         Pageable pageable = PageRequest.of(page, pageSize);
         List<CommentDTO> comments = commentRepository.findByBotIdOrderByTimeDesc(botId, pageable)
-            .stream().map(CommentDTO::new).toList();
+                .stream().map(CommentDTO::new).toList();
         Integer commentsTotalCount = commentRepository.countByBotId(botId);
         return new GetCommentsOkResponseDTO(commentsTotalCount, comments);
     }
