@@ -1,11 +1,10 @@
 package com.unigpt.bot.model;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
@@ -19,7 +18,6 @@ import lombok.Data;
 @Table(name = "user")
 public class User {
 
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
     private Integer id;
 
@@ -39,5 +37,19 @@ public class User {
 
     @OneToMany(mappedBy = "creator")
     private List<Bot> createBots;
+
+
+    public User() {
+        // not used
+    }
+
+    public User(Integer id, String name, String avatar) {
+        this.id = id;
+        this.name = name;
+        this.avatar = avatar;
+        this.likeBots = new ArrayList<>();
+        this.starBots = new ArrayList<>();
+        this.createBots = new ArrayList<>();
+    }
 
 }

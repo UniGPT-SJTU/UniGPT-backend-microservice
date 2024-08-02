@@ -6,17 +6,19 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-import com.unigpt.bot.dto.UpdateBotInfoRequestToChatServiceDTO;
+import com.unigpt.bot.dto.UpdateBotInfoRequestToPluginServiceDTO;
 
-@FeignClient(name = "chat-service", url = "${services.chat-service.url}/internal")
-public interface ChatServiceClient {
+@FeignClient(name = "plugin-service", url = "${services.plugin-service.url}/internal")
+public interface PluginServiceClient {
+
     @PostMapping("/bots/{botId}")
     void createBot(
             @PathVariable Integer botId,
-            @RequestBody UpdateBotInfoRequestToChatServiceDTO dto);
+            @RequestBody UpdateBotInfoRequestToPluginServiceDTO dto);
 
     @PutMapping("/bots/{botId}")
     void updateBot(
             @PathVariable Integer botId,
-            @RequestBody UpdateBotInfoRequestToChatServiceDTO dto);
+            @RequestBody UpdateBotInfoRequestToPluginServiceDTO dto);
+
 }

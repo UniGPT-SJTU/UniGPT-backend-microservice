@@ -3,6 +3,7 @@ package com.unigpt.user.model;
 import java.util.ArrayList;
 import java.util.List;
 
+import com.unigpt.user.dto.BotEditInfoDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -35,12 +36,6 @@ public class Bot {
     @Column(name = "description", columnDefinition = "VARCHAR(255)")
     private String description;
 
-    @ManyToMany(mappedBy = "likeBots")
-    private List<User> likeUsers;
-
-    @ManyToMany(mappedBy = "starBots")
-    private List<User> starUsers;
-
     @ManyToOne
     @JoinColumn(name = "creator_id")
     private User creator;
@@ -53,10 +48,10 @@ public class Bot {
 //    @JoinTable(name = "bot_use_plugin", joinColumns = @JoinColumn(name = "bot_id"), inverseJoinColumns = @JoinColumn(name = "plugin_id"))
 //    private List<Plugin> plugins;
 
-//    public Bot(BotEditInfoDTO dto, User creator) {
-//        this.name = dto.getName();
-//        this.avatar = dto.getAvatar();
-//        this.description = dto.getDescription();
+    public Bot(BotEditInfoDTO dto, User creator) {
+        this.name = dto.getName();
+        this.avatar = dto.getAvatar();
+        this.description = dto.getDescription();
 //        this.isPublished = dto.isPublished();
 //        this.detail = dto.getDetail();
 //        this.photos = dto.getPhotos();
@@ -66,14 +61,14 @@ public class Bot {
 //        this.starNumber = 0;
 //        this.likeUsers = new ArrayList<>();
 //        this.starUsers = new ArrayList<>();
-//        this.creator = creator;
+        this.creator = creator;
 //        this.comments = new ArrayList<>();
 //
 //        this.llmArgs = LLMArgs.builder()
 //                .baseModelType(BaseModelType.fromValue(dto.getBaseModelAPI()))
 //                .temperature(dto.getTemperature()).build();
-//
-//    }
+
+    }
 //
 //    public void updateInfo(BotEditInfoDTO dto) {
 //        this.name = dto.getName();
@@ -93,10 +88,6 @@ public class Bot {
 //    }
 
     public Bot() {
-        // not used
-        this.likeUsers = new ArrayList<>();
-        this.starUsers = new ArrayList<>();
-//        this.comments = new ArrayList<>();
         this.creator = new User();
     }
 }

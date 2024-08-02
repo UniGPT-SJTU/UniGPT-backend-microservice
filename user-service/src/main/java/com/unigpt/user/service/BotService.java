@@ -1,6 +1,9 @@
 package com.unigpt.user.service;
 
 
+import com.unigpt.user.dto.BotEditInfoDTO;
+import com.unigpt.user.dto.ResponseDTO;
+
 import java.util.List;
 
 public interface BotService {
@@ -38,13 +41,13 @@ public interface BotService {
 //     */
 //    BotEditInfoDTO getBotEditInfo(Integer id, String token);
 //
-//    /**
-//     * @brief 创建机器人
-//     * @param dto 机器人编辑信息
-//     * @param token 用户token
-//     * @return 创建结果
-//     */
-//    ResponseDTO createBot(BotEditInfoDTO dto, String token) throws Exception;
+    /**
+     * @brief 创建机器人
+     * @param dto 机器人编辑信息
+     * @param userid 用户id
+     * @return 创建结果
+     */
+    ResponseDTO createBot(BotEditInfoDTO dto, Integer botid, Integer userid) throws Exception;
 //
 //    /**
 //     * @brief 更新机器人

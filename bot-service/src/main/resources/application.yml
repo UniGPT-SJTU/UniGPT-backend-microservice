@@ -20,3 +20,7 @@ server:
 services:
   user-service:
     url: ${USER_SERVICE_URL}
+  chat-service:
+    url: ${CHAT_SERVICE_URL}
+  plugin-service:
+    url: ${PLUGIN_SERVICE_URL}
