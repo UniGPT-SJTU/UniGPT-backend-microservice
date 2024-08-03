@@ -11,6 +11,7 @@
 | user_db      | MySQL      | 3306  | user-service |
 | bot_db       | MySQL      | 3307  | bot-service |
 | chat_db      | MySQL      | 3308  | chat-service |
+| plugin_db    | MySQL      | 3309  | plugin-service |
 | postgresql_db| PostgreSQL | 5432  | chat-service |
 ### 本地运行单个微服务
 在开发过程中，需要本地运行单个微服务后端，此时后端直接运行在操作系统上，与Docker无关，因此后端监听的端口为8080。
@@ -78,6 +79,7 @@ source .env
 | user-service | 8082 |
 | bot-service | 8083 |
 | chat-service | 8084 |
+| plugin-service | 8085 |
 
 #### 运行数据库容器
 在仓库根目录使用docker compose命令启动所有数据库容器
