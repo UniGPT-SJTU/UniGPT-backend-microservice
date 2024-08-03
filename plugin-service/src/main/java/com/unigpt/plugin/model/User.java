@@ -3,6 +3,8 @@ package com.unigpt.plugin.model;
 import jakarta.persistence.*;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
 @Entity
 @Table(name = "user")
@@ -17,11 +19,17 @@ public class User {
     @Column(name = "name")
     private String name;
 
-    @Column(name = "avatar")
-    private String avatar;
+    @OneToMany
+    @JoinColumn(name = "creator_id")
+    private List<Plugin> createPlugins;
 
     // TODO: Confirm information needed in this microservice
 
     public User() {
+    }
+
+    public User(Integer userid, String username) {
+        this.trueId = userid;
+        this.name = username;
     }
 }
