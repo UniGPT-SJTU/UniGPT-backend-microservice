@@ -16,3 +16,10 @@ logging:
 
 server:
    port: 8080
+services:
+  bot-service:
+    url: ${BOT_SERVICE_URL}
+  chat-service:
+    url: ${CHAT_SERVICE_URL}
+  plugin-service:
+    url: ${PLUGIN_SERVICE_URL}

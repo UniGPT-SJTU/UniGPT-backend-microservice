@@ -1,6 +1,7 @@
 package com.unigpt.user.controller;
 
 import com.unigpt.user.dto.GetBotsOkResponseDTO;
+import com.unigpt.user.dto.ResponseDTO;
 import com.unigpt.user.dto.UserUpdateDTO;
 import com.unigpt.user.service.UserService;
 import org.springframework.http.HttpStatus;
@@ -10,6 +11,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.security.sasl.AuthenticationException;
 import java.util.Collections;
 import java.util.List;
+import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
 
 @RestController
@@ -46,8 +48,14 @@ public class UserController {
     @PutMapping("/{userid}")
     public ResponseEntity<Object> updateUserProfile(
             @PathVariable Integer userid,
-            @RequestBody UserUpdateDTO userUpdateDTO
+            @RequestBody UserUpdateDTO userUpdateDTO,
+            @RequestHeader(name = "X-User-Id") Integer id,
+            @RequestHeader(name = "X-Is-Admin") boolean isAdmin
     ) {
+        if (!isAdmin && !userid.equals(id)) {
+            return ResponseEntity.status(401).body("Permission denied");
+        }
+
         try {
             service.updateUserInfo(userid, userUpdateDTO);
             return ResponseEntity.ok("User info updated successfully");
@@ -69,5 +77,45 @@ public class UserController {
         }
     }
 
+    @GetMapping("/{userid}/used-bots")
+    public ResponseEntity<Object> getUsedBots(
+            @PathVariable Integer userid,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "20") Integer pagesize) {
+        try {
+            // 使用userid和token
+            return ResponseEntity.ok(service.getUsedBots(userid, page, pagesize));
+        }
+        catch (NoSuchElementException e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(false, e.getMessage()));
+        }
+    }
+
+    @PutMapping("/used-bots/{botId}")
+    public ResponseEntity<Object> useBot(
+            @PathVariable Integer botId,
+            @RequestHeader(name = "X-User-Id") Integer userId
+    ){
+        try {
+            return ResponseEntity.ok(service.useBot(botId, userId));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(false, e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/used-bots/{botId}")
+    public ResponseEntity<Object> disuseBot(
+            @PathVariable Integer botId,
+            @RequestHeader(name = "X-User-Id") Integer userId
+    ){
+        try {
+            return ResponseEntity.ok(service.disuseBot(botId, userId));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(false, e.getMessage()));
+        }
+    }
 
 }
