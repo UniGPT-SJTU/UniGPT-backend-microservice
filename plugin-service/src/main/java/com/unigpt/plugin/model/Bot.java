@@ -1,5 +1,6 @@
 package com.unigpt.plugin.model;
 
+import com.unigpt.plugin.dto.BotInfoDTO;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -25,6 +26,12 @@ public class Bot {
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "bot_use_plugin", joinColumns = @JoinColumn(name = "bot_id"), inverseJoinColumns = @JoinColumn(name = "plugin_id"))
     private List<Plugin> plugins;
+
+    public Bot(BotInfoDTO botInfoDTO, Integer id){
+        this.trueId = id;
+        this.name = botInfoDTO.getName();
+        this.avatar = botInfoDTO.getAvatar();
+    }
 
     public Bot() {
     }
