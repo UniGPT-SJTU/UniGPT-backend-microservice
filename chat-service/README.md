@@ -22,4 +22,7 @@ export POSTGRES_PASSWORD="bleaves"
 
 export HTTP_PROXY_HOST="127.0.0.1" 
 export HTTP_PROXY_PORT="7890" 
+
+export USER_SERVICE_URL="http://localhost:8082"
+export BOT_SERVICE_URL="http://localhost:8083"
 ```

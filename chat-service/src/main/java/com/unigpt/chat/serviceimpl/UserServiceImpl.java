@@ -31,12 +31,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserInfo(Integer requestUserId, Integer targetUserId,
+    public void updateUserInfo(Integer targetUserId,
             UpdateUserInfoRequestDTO updateUserInfoRequestDTO)
             throws AuthenticationException {
-        if (!requestUserId.equals(targetUserId)) {
-            throw new AuthenticationException("Unauthorized to update user info");
-        }
         User targetUser = userRepository.findById(targetUserId)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
 
