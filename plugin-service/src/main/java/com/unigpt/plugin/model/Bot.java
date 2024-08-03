@@ -23,6 +23,9 @@ public class Bot {
     @Column(name = "avatar")
     private String avatar;
 
+    @Column(name = "description")
+    private String description;
+
     @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "bot_use_plugin", joinColumns = @JoinColumn(name = "bot_id"), inverseJoinColumns = @JoinColumn(name = "plugin_id"))
     private List<Plugin> plugins;
@@ -36,6 +39,7 @@ public class Bot {
         this.trueId = id;
         this.name = botInfoDTO.getName();
         this.avatar = botInfoDTO.getAvatar();
+        this.description = botInfoDTO.getDescription();
     }
 
     public Bot() {

@@ -11,6 +11,7 @@ public class BotInfoDTO {
 
     private String name;
     private String avatar;
+    private String description;
     private List<Integer> plugin_ids;
 
     public BotInfoDTO() {
