@@ -7,8 +7,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-// @FeignClient(name = "bot-service", url = "${service.bot-service.url}/internal")
-@FeignClient(name = "bot-service", url = "http://localhost:8081/internal")
+@FeignClient(name = "bot-service", url = "${service.bot-service.url}/internal")
 public interface BotServiceClient {
     @PostMapping("/plugin/{pluginId}")
     ResponseEntity<Object> createPlugin(

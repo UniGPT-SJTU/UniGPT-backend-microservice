@@ -28,3 +28,6 @@ server:
 #      key-store-password: unigpt
 #      keyStoreType: PKCS12
 #      keyAlias: tomcat
+services:
+  bot-service:
+    url: ${BOT_SERVICE_URL}
