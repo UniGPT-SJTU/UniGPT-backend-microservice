@@ -1,5 +1,8 @@
 package com.unigpt.user.serviceImpl;
 
+import com.unigpt.user.client.BotServiceClient;
+import com.unigpt.user.client.ChatServiceClient;
+import com.unigpt.user.client.PluginServiceClient;
 import com.unigpt.user.dto.*;
 import com.unigpt.user.model.User;
 import com.unigpt.user.model.Bot;
@@ -20,10 +23,21 @@ import java.util.stream.Collectors;
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
     private final BotRepository  botRepository;
+    private final BotServiceClient botServiceClient;
+    private final ChatServiceClient chatServiceClient;
+    private final PluginServiceClient pluginServiceClient;
 
-    public UserServiceImpl(UserRepository userRepository, BotRepository  botRepository) {
+    public UserServiceImpl(
+            UserRepository userRepository,
+            BotRepository  botRepository,
+            BotServiceClient botServiceClient,
+            ChatServiceClient chatServiceClient,
+            PluginServiceClient pluginServiceClient) {
         this.userRepository = userRepository;
         this.botRepository = botRepository;
+        this.botServiceClient = botServiceClient;
+        this.chatServiceClient = chatServiceClient;
+        this.pluginServiceClient = pluginServiceClient;
     }
 
     public Integer createUser(String email, String account, String name){
@@ -37,6 +51,19 @@ public class UserServiceImpl implements UserService {
         user.setEmail(email);
         user.setAccount(account);
         user.setName(name);
+
+        if(botServiceClient.createUser(user.getId(), new UserUpdateRequestDTO(user))
+                .getStatusCode().isError())
+            throw new RuntimeException("Failed to create user in bot service");
+
+        if(chatServiceClient.createUser(user.getId(), new UserUpdateRequestDTO(user))
+                .getStatusCode().isError())
+            throw new RuntimeException("Failed to create user in chat service");
+
+        if(pluginServiceClient.createUser(user.getId(), user.getName())
+                .getStatusCode().isError())
+            throw new RuntimeException("Failed to create user in plugin service");
+
         userRepository.save(user);
         return user.getId();
     }
