@@ -2,17 +2,20 @@ package com.unigpt.plugin.serviceImpl;
 
 import com.unigpt.plugin.Repository.PluginRepository;
 import com.unigpt.plugin.Repository.UserRepository;
+import com.unigpt.plugin.dto.GetPluginsOkResponseDTO;
+import com.unigpt.plugin.dto.PluginBriefInfoDTO;
 import com.unigpt.plugin.dto.PluginInfoDTO;
 import com.unigpt.plugin.dto.ResponseDTO;
 import com.unigpt.plugin.model.Plugin;
 import com.unigpt.plugin.model.User;
 import com.unigpt.plugin.service.PluginService;
+import com.unigpt.plugin.utils.PaginationUtils;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+//import java.nio.file.Files;
+//import java.nio.file.Path;
+//import java.nio.file.Paths;
+//import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -57,24 +60,22 @@ public class PluginServiceImpl implements PluginService {
         pluginRepository.save(plugin);
         return new ResponseDTO(true, "Create plugin successfully");
     }
-//
-//    @Override
-//    public GetPluginsOkResponseDTO getPlugins(String q, String order, Integer page, Integer pageSize) {
-//        List<PluginBriefInfoDTO> plugins;
-//        if (order.equals("latest")) {
-//            plugins = pluginRepository.findAllByOrderByIdDesc()
-//                    .stream()
-//                    .filter(plugin -> q.isEmpty() || plugin.getName().contains(q))
-//                    .filter(plugin -> plugin.getIsPublished())
-//                    .map(plugin -> new PluginBriefInfoDTO(plugin.getId(), plugin.getName(), plugin.getDescription(), plugin.getAvatar(),
-//                            false, false))
-//                    .collect(Collectors.toList());
-//        } else {
-//            throw new IllegalArgumentException("Invalid order parameter");
-//        }
-//
-//        return new GetPluginsOkResponseDTO(plugins.size(), PaginationUtils.paginate(plugins, page, pageSize));
-//    }
+
+    public GetPluginsOkResponseDTO getPlugins(String q, String order, Integer page, Integer pageSize) {
+        List<PluginBriefInfoDTO> plugins;
+        if (order.equals("latest")) {
+            plugins = pluginRepository.findAllByOrderByIdDesc()
+                    .stream()
+                    .filter(plugin -> q.isEmpty() || plugin.getName().contains(q))
+                    .filter(plugin -> plugin.getIsPublished())
+                    .map(plugin -> new PluginBriefInfoDTO(plugin.getId(), plugin.getName(), plugin.getDescription(), plugin.getAvatar()))
+                    .collect(Collectors.toList());
+        } else {
+            throw new IllegalArgumentException("Invalid order parameter");
+        }
+
+        return new GetPluginsOkResponseDTO(plugins.size(), PaginationUtils.paginate(plugins, page, pageSize));
+    }
 //
 //    @Override
 //    public PluginDetailInfoDTO getPluginInfo(Integer id, String token) {

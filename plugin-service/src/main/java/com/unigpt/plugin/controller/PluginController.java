@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.*;
 
 
 @RestController
-@RequestMapping("/internal/plugin")
+@RequestMapping("/internal/plugins")
 public class PluginController {
     PluginService pluginService;
 
@@ -23,6 +23,20 @@ public class PluginController {
             @RequestHeader("X-User-Id") Integer userid){
         try {
             return ResponseEntity.ok(pluginService.createPlugin(dto, userid));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(false, e.getMessage()));
+        }
+    }
+
+    @GetMapping
+    public ResponseEntity<Object> getPlugins(
+            @RequestParam(defaultValue = "") String q,
+            @RequestParam(defaultValue = "latest") String order,
+            @RequestParam(defaultValue = "0") Integer page,
+            @RequestParam(defaultValue = "20") Integer pagesize){
+        try {
+            return ResponseEntity.ok(pluginService.getPlugins(q, order, page, pagesize));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ResponseDTO(false, e.getMessage()));
