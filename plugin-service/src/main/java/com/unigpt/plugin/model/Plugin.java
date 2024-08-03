@@ -1,5 +1,6 @@
 package com.unigpt.plugin.model;
 
+import com.unigpt.plugin.dto.PluginInfoDTO;
 import jakarta.persistence.*;
 import lombok.Data;
 
@@ -65,6 +66,20 @@ public class Plugin {
         this.photos = photos;
         this.detail = detail;
         this.isPublished = isPublished;
+    }
+
+    public Plugin(PluginInfoDTO dto, User user, String url) {
+        this.name = dto.getName();
+        this.description = dto.getDescription();
+
+        this.url = url;
+        this.creator = user;
+        this.avatar = dto.getAvatar();
+        this.photos = dto.getPhotos();
+        this.detail = dto.getDetail();
+        this.isPublished = dto.getIsPublished();
+        // for parameters
+        this.parameters = dto.getParameters().stream().map(p -> new Parameter(p, this)).toList();
     }
 
     // constructor

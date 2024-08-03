@@ -1,5 +1,11 @@
 package com.unigpt.plugin.serviceImpl;
 
+import com.unigpt.plugin.Repository.PluginRepository;
+import com.unigpt.plugin.Repository.UserRepository;
+import com.unigpt.plugin.dto.PluginInfoDTO;
+import com.unigpt.plugin.dto.ResponseDTO;
+import com.unigpt.plugin.model.Plugin;
+import com.unigpt.plugin.model.User;
 import com.unigpt.plugin.service.PluginService;
 import org.springframework.stereotype.Service;
 
@@ -13,15 +19,44 @@ import java.util.stream.Collectors;
 
 @Service
 public class PluginServiceImpl implements PluginService {
-//    private final PluginRepository pluginRepository;
-//    private final AuthService authService;
-//    private final DockerService dockerService;
+    private final PluginRepository pluginRepository;
+    private final UserRepository userRepository;
+
+    public PluginServiceImpl(
+            PluginRepository pluginRepository,
+            UserRepository userRepository) {
+        this.pluginRepository = pluginRepository;
+        this.userRepository = userRepository;
+    }
+
+
+    public ResponseDTO createPlugin(PluginInfoDTO dto, Integer userid) throws Exception {
+        User user = userRepository.findByTrueId(userid)
+                .orElseThrow(() -> new NoSuchElementException("User not found for ID: " + userid));
+
+//        TODO: Connect to Plugin serverless
+//        // 构建目标文件路径
+//        String directoryPath = "src/main/resources/" + user.getAccount();
+//        String filePath = directoryPath + "/" + dto.getName() + ".py";
 //
-//    public PluginServiceImpl(PluginRepository pluginRepository, AuthService authService, DockerService dockerService) {
-//        this.pluginRepository = pluginRepository;
-//        this.authService = authService;
-//        this.dockerService = dockerService;
-//    }
+//        // 判断文件是否存在，如果存在则抛出异常
+//        if (Files.exists(Paths.get(filePath))) {
+//            return new ResponseDTO(false, "Plugin already exists");
+//        }
+//
+//        // 创建目录
+//        Path path = Paths.get(directoryPath);
+//        Files.createDirectories(path);
+//
+//        // 将code字段的内容写入到文件中
+//        Path file = Paths.get(filePath);
+//        Files.writeString(file, dto.getCode(), StandardOpenOption.CREATE);
+
+        String filePath = "";
+        Plugin plugin = new Plugin(dto, user, filePath);
+        pluginRepository.save(plugin);
+        return new ResponseDTO(true, "Create plugin successfully");
+    }
 //
 //    @Override
 //    public GetPluginsOkResponseDTO getPlugins(String q, String order, Integer page, Integer pageSize) {
@@ -70,31 +105,6 @@ public class PluginServiceImpl implements PluginService {
 //        return new PluginEditInfoDTO(plugin, user);
 //    }
 //
-//    @Override
-//    public ResponseDTO createPlugin(PluginCreateDTO dto, String token) throws Exception {
-//        User user = authService.getUserByToken(token);
-//
-//        // 构建目标文件路径
-//        String directoryPath = "src/main/resources/" + user.getAccount();
-//        String filePath = directoryPath + "/" + dto.getName() + ".py";
-//
-//        // 判断文件是否存在，如果存在则抛出异常
-//        if (Files.exists(Paths.get(filePath))) {
-//            return new ResponseDTO(false, "Plugin already exists");
-//        }
-//
-//        // 创建目录
-//        Path path = Paths.get(directoryPath);
-//        Files.createDirectories(path);
-//
-//        // 将code字段的内容写入到文件中
-//        Path file = Paths.get(filePath);
-//        Files.writeString(file, dto.getCode(), StandardOpenOption.CREATE);
-//
-//        Plugin plugin = new Plugin(dto, user, filePath);
-//        pluginRepository.save(plugin);
-//        return new ResponseDTO(true, "Create plugin successfully");
-//    }
 //
 //    @Override
 //    public ResponseDTO testCreatePlugin(PluginCreateTestDTO dto, String token) throws Exception {

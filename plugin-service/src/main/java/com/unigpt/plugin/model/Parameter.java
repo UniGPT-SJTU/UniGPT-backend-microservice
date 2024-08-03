@@ -1,5 +1,6 @@
 package com.unigpt.plugin.model;
 
+import com.unigpt.plugin.dto.ParameterDTO;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -31,6 +32,13 @@ public class Parameter {
     @ManyToOne()
     @JoinColumn(name = "tool_id", nullable = false)
     private Plugin plugin;
+
+    public Parameter(ParameterDTO paramterDTO, Plugin plugin) {
+        this.name = paramterDTO.getName();
+        this.description = paramterDTO.getDescription();
+        this.type = paramterDTO.getType();
+        this.plugin = plugin;
+    }
 
     public Parameter() {
     }
