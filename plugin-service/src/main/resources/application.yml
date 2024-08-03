@@ -9,9 +9,9 @@ spring:
   application:
     name: user-service
   datasource:
-    url: jdbc:mysql://localhost:3306/unigpt_plugin
-    username: unigpt
-    password: unigpt
+    url: ${DB_URL}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
@@ -22,12 +22,7 @@ logging:
     org.springframework.web.socket: DEBUG
 
 server:
-  port: 8085
-#   ssl:
-#      key-store: keystore.p12
-#      key-store-password: unigpt
-#      keyStoreType: PKCS12
-#      keyAlias: tomcat
+  port: 8080
 services:
   bot-service:
     url: ${BOT_SERVICE_URL}

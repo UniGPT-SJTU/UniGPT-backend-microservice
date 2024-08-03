@@ -25,7 +25,7 @@ services:
 
       USER_SERVICE_URL: http://user_service:8080
       CHAT_SERVICE_URL: http://chat_service:8080
-      # PLUGIN_SERVICE_URL: http://plugin_service:8080
+      PLUGIN_SERVICE_URL: http://plugin_service:8080
 
   chat_service:
     build:
@@ -58,6 +58,22 @@ services:
       BOT_SERVICE_URL: http://bot_service:8080
 
       # TODO: 配置代理
+
+  plugin_service:
+    build:
+      context: ./plugin-service
+      dockerfile: Dockerfile
+    image: plugin_service_image:latest
+    ports:
+      - "8085:8080"
+    environment:
+      DB_URL: jdbc:mysql://plugin_db:3306/unigpt_plugin
+      DB_USERNAME: unigpt
+      DB_PASSWORD: unigpt
+
+      USER_SERVICE_URL: http://user_service:8080
+      BOT_SERVICE_URL: http://bot_service:8080
+      CHAT_SERVICE_URL: http://chat_service:8080
 
   user_db:
     image: mysql:8.0
@@ -96,6 +112,18 @@ services:
     volumes: 
       - chat_db_data:/var/lib/mysql
 
+  plugin_db:
+    image: mysql:8.0
+    ports:
+      - "3309:3306"
+    environment:
+      MYSQL_ROOT_PASSWORD: rootpassword
+      MYSQL_USER: unigpt
+      MYSQL_PASSWORD: unigpt
+      MYSQL_DATABASE: unigpt_plugin
+    volumes: 
+      - plugin_db_data:/var/lib/mysql
+
   postgresql_db:
     image: pgvector/pgvector:pg14
     restart: always
@@ -112,4 +140,5 @@ volumes:
   user_db_data:
   bot_db_data:
   chat_db_data:
+  plugin_db_data:
   postgresql_data:
