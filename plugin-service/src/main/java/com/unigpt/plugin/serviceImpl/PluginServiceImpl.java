@@ -2,11 +2,13 @@ package com.unigpt.plugin.serviceImpl;
 
 import com.unigpt.plugin.Repository.PluginRepository;
 import com.unigpt.plugin.Repository.UserRepository;
+import com.unigpt.plugin.client.BotServiceClient;
 import com.unigpt.plugin.dto.*;
 import com.unigpt.plugin.model.Plugin;
 import com.unigpt.plugin.model.User;
 import com.unigpt.plugin.service.PluginService;
 import com.unigpt.plugin.utils.PaginationUtils;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 //import java.nio.file.Files;
@@ -21,12 +23,15 @@ import java.util.stream.Collectors;
 public class PluginServiceImpl implements PluginService {
     private final PluginRepository pluginRepository;
     private final UserRepository userRepository;
+    private final BotServiceClient botServiceClient;
 
     public PluginServiceImpl(
             PluginRepository pluginRepository,
-            UserRepository userRepository) {
+            UserRepository userRepository,
+            BotServiceClient botServiceClient) {
         this.pluginRepository = pluginRepository;
         this.userRepository = userRepository;
+        this.botServiceClient = botServiceClient;
     }
 
 
@@ -54,6 +59,14 @@ public class PluginServiceImpl implements PluginService {
 
         String filePath = "";
         Plugin plugin = new Plugin(dto, user, filePath);
+
+        // Call botServiceClient to create a plugin
+        ResponseEntity<Object> response =  botServiceClient.createPlugin(plugin.getId(), new PluginEditInfoDTO(plugin));
+        // No need for undo operation since plugin is not created in pluginRepository yet
+        if(response.getStatusCode().isError()){
+            throw new Exception("Failed to create plugin in Bot Microservice");
+        }
+
         pluginRepository.save(plugin);
         return new ResponseDTO(true, "Create plugin successfully");
     }
