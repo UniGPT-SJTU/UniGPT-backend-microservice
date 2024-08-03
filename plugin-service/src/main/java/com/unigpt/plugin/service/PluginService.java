@@ -2,6 +2,7 @@ package com.unigpt.plugin.service;
 
 
 import com.unigpt.plugin.dto.GetPluginsOkResponseDTO;
+import com.unigpt.plugin.dto.PluginDetailInfoDTO;
 import com.unigpt.plugin.dto.PluginInfoDTO;
 import com.unigpt.plugin.dto.ResponseDTO;
 
@@ -24,6 +25,8 @@ public interface PluginService {
      * @return 插件列表
      */
     GetPluginsOkResponseDTO getPlugins(String q, String order, Integer page, Integer pageSize);
+
+    PluginDetailInfoDTO getPluginInfo(Integer pluginid, Integer userid);
 
 //    /**
 //     * @brief 获取插件详细信息

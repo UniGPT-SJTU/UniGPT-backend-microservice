@@ -42,4 +42,16 @@ public class PluginController {
                     .body(new ResponseDTO(false, e.getMessage()));
         }
     }
+
+    @GetMapping("/{pluginid}")
+    public ResponseEntity<Object> getPluginInfo(
+            @PathVariable Integer pluginid,
+            @RequestHeader("X-User-Id") Integer userid){
+        try {
+            return ResponseEntity.ok(pluginService.getPluginInfo(pluginid, userid));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(false, e.getMessage()));
+        }
+    }
 }

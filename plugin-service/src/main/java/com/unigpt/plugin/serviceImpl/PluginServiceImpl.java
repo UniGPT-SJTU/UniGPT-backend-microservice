@@ -2,10 +2,7 @@ package com.unigpt.plugin.serviceImpl;
 
 import com.unigpt.plugin.Repository.PluginRepository;
 import com.unigpt.plugin.Repository.UserRepository;
-import com.unigpt.plugin.dto.GetPluginsOkResponseDTO;
-import com.unigpt.plugin.dto.PluginBriefInfoDTO;
-import com.unigpt.plugin.dto.PluginInfoDTO;
-import com.unigpt.plugin.dto.ResponseDTO;
+import com.unigpt.plugin.dto.*;
 import com.unigpt.plugin.model.Plugin;
 import com.unigpt.plugin.model.User;
 import com.unigpt.plugin.service.PluginService;
@@ -76,21 +73,21 @@ public class PluginServiceImpl implements PluginService {
 
         return new GetPluginsOkResponseDTO(plugins.size(), PaginationUtils.paginate(plugins, page, pageSize));
     }
-//
-//    @Override
-//    public PluginDetailInfoDTO getPluginInfo(Integer id, String token) {
-//
-//        Plugin plugin = pluginRepository.findById(id)
-//                .orElseThrow(() -> new NoSuchElementException("Plugin not found for ID: " + id));
-//
-//        User user = authService.getUserByToken(token);
-//
-//        if (!plugin.getIsPublished() && plugin.getCreator() != user) {
-//            // 如果plugin未发布且请求用户不是plugin的创建者，则抛出异常
-//            throw new NoSuchElementException("Plugin not published for ID: " + id);
-//        }
-//        return new PluginDetailInfoDTO(plugin, user);
-//    }
+
+    public PluginDetailInfoDTO getPluginInfo(Integer pluginid, Integer userid){
+
+        Plugin plugin = pluginRepository.findById(pluginid)
+                .orElseThrow(() -> new NoSuchElementException("Plugin not found for ID: " + pluginid));
+
+        User user = userRepository.findByTrueId(userid)
+                .orElseThrow(() -> new NoSuchElementException("User not found for ID: " + userid));
+
+        if (!plugin.getIsPublished() && plugin.getCreator() != user) {
+            // 如果plugin未发布且请求用户不是plugin的创建者，则抛出异常
+            throw new NoSuchElementException("Plugin not published for ID: " + pluginid);
+        }
+        return new PluginDetailInfoDTO(plugin, user);
+    }
 //
 //    @Override
 //    public PluginEditInfoDTO getPluginEditInfo(Integer id, String token) {

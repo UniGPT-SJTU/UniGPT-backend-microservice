@@ -1,11 +1,10 @@
-package com.ise.unigpt.dto;
+package com.unigpt.plugin.dto;
+
+import com.unigpt.plugin.model.Plugin;
+import com.unigpt.plugin.model.User;
+import lombok.Data;
 
 import java.util.List;
-
-import com.ise.unigpt.model.Plugin;
-import com.ise.unigpt.model.User;
-
-import lombok.Data;
 
 @Data
 public class PluginDetailInfoDTO {
@@ -19,7 +18,6 @@ public class PluginDetailInfoDTO {
     private String detail;
     private String avatar;
     private boolean asCreator;
-    private boolean asAdmin;
     private List<BotBriefInfoDTO> bots;
 
     public PluginDetailInfoDTO() {
@@ -30,13 +28,12 @@ public class PluginDetailInfoDTO {
         this.id = plugin.getId();
         this.name = plugin.getName();
         this.creator = plugin.getCreator().getName();
-        this.creatorId = plugin.getCreator().getId();
+        this.creatorId = plugin.getCreator().getTrueId();
         this.description = plugin.getDescription();
         this.photos = plugin.getPhotos();
         this.detail = plugin.getDetail();
         this.avatar = plugin.getAvatar();
         this.asCreator = plugin.getCreator().equals(user);
-        this.asAdmin = user.getAsAdmin();
-        this.bots = plugin.getBots().stream().map(bot -> new BotBriefInfoDTO(bot, user)).toList();
+        this.bots = plugin.getBots().stream().map(BotBriefInfoDTO::new).toList();
     }
 }
