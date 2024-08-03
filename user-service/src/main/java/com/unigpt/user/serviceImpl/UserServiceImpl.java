@@ -85,6 +85,14 @@ public class UserServiceImpl implements UserService {
         targetUser.setAvatar(userUpdateDTO.getAvatar());
         targetUser.setDescription(userUpdateDTO.getDescription());
 
+        if(botServiceClient.updateUser(targetUser.getId(), new UserUpdateRequestDTO(targetUser))
+                .getStatusCode().isError())
+            throw new RuntimeException("Failed to update user in bot service");
+
+        if(chatServiceClient.updateUser(targetUser.getId(), new UserUpdateRequestDTO(targetUser))
+                .getStatusCode().isError())
+            throw new RuntimeException("Failed to update user in chat service");
+
         userRepository.save(targetUser);
     }
 

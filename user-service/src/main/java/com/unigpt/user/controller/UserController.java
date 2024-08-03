@@ -48,8 +48,14 @@ public class UserController {
     @PutMapping("/{userid}")
     public ResponseEntity<Object> updateUserProfile(
             @PathVariable Integer userid,
-            @RequestBody UserUpdateDTO userUpdateDTO
+            @RequestBody UserUpdateDTO userUpdateDTO,
+            @RequestHeader(name = "X-User-Id") Integer id,
+            @RequestHeader(name = "X-Is-Admin") boolean isAdmin
     ) {
+        if (!isAdmin && !userid.equals(id)) {
+            return ResponseEntity.status(401).body("Permission denied");
+        }
+
         try {
             service.updateUserInfo(userid, userUpdateDTO);
             return ResponseEntity.ok("User info updated successfully");

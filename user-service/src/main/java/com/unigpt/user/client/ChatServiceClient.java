@@ -5,6 +5,7 @@ import org.springframework.cloud.openfeign.FeignClient;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
 
@@ -14,5 +15,10 @@ public interface ChatServiceClient {
     ResponseEntity<Object> createUser(
             @PathVariable Integer id,
             @RequestBody UserUpdateRequestDTO dto);
+
+    @PutMapping("/users/{id}")
+    ResponseEntity<Object> updateUser(
+            @PathVariable Integer id,
+            @RequestBody UserUpdateRequestDTO updateUserInfoRequestDTO);
 }
 
