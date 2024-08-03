@@ -25,6 +25,11 @@ public class BotServiceImpl implements BotService {
     }
 
     public ResponseDTO createBot(BotInfoDTO dto, Integer botid){
+        //check if botid is already in use
+        if(botRepository.findByTrueId(botid).isPresent()){
+            return new ResponseDTO(false, "Bot ID already in use");
+        }
+
         // 创建bot的plugin列表
         // 对于每个plugin, 获取其中的id,使用findById方法获取plugin对象, 如果不存在则抛出异常
         // 如果存在则将plugin对象加入到plugin列表中
@@ -38,5 +43,23 @@ public class BotServiceImpl implements BotService {
         botRepository.save(newBot);
 
         return new ResponseDTO(true, "Bot created successfully");
+    }
+
+    public ResponseDTO updateBot(BotInfoDTO dto, Integer botid){
+        // 创建bot的plugin列表
+        // 对于每个plugin, 获取其中的id,使用findById方法获取plugin对象, 如果不存在则抛出异常
+        // 如果存在则将plugin对象加入到plugin列表中
+        List<Plugin> plugins = dto.getPlugin_ids().stream()
+                .map(pluginId -> pluginRepository.findById(pluginId)
+                        .orElseThrow(() -> new NoSuchElementException("Plugin not found for ID: " + pluginId)))
+                .collect(Collectors.toList());
+
+        Bot bot = botRepository.findByTrueId(botid)
+                .orElseThrow(() -> new NoSuchElementException("Bot not found for ID: " + botid));
+        bot.update(dto);
+        bot.setPlugins(plugins);
+        botRepository.save(bot);
+
+        return new ResponseDTO(true, "Bot updated successfully");
     }
 }

@@ -27,6 +27,11 @@ public class Bot {
     @JoinTable(name = "bot_use_plugin", joinColumns = @JoinColumn(name = "bot_id"), inverseJoinColumns = @JoinColumn(name = "plugin_id"))
     private List<Plugin> plugins;
 
+    public void update(BotInfoDTO dto) {
+        this.name = dto.getName();
+        this.avatar = dto.getAvatar();
+    }
+
     public Bot(BotInfoDTO botInfoDTO, Integer id){
         this.trueId = id;
         this.name = botInfoDTO.getName();
@@ -35,4 +40,5 @@ public class Bot {
 
     public Bot() {
     }
+
 }
