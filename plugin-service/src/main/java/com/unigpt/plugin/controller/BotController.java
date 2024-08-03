@@ -3,7 +3,6 @@ package com.unigpt.plugin.controller;
 
 import com.unigpt.plugin.dto.*;
 import com.unigpt.plugin.service.BotService;
-import com.unigpt.plugin.service.PluginService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
