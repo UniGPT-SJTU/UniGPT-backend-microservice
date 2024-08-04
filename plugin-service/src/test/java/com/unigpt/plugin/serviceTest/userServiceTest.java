@@ -3,12 +3,9 @@ package com.unigpt.plugin.serviceTest;
 import com.unigpt.plugin.Repository.UserRepository;
 import com.unigpt.plugin.dto.ResponseDTO;
 import com.unigpt.plugin.model.User;
-import com.unigpt.plugin.service.UserService;
 import com.unigpt.plugin.serviceImpl.UserServiceImpl;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 
