@@ -3,7 +3,7 @@ package com.unigpt.plugin.controllerTest;
 import com.unigpt.plugin.controller.PluginController;
 import com.unigpt.plugin.dto.PluginInfoDTO;
 import com.unigpt.plugin.dto.ResponseDTO;
-import com.unigpt.plugin.dtoFactory.dtoFactory;
+import com.unigpt.plugin.factory.dtoFactory;
 import com.unigpt.plugin.service.PluginService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

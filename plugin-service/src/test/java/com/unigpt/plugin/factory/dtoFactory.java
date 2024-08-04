@@ -1,4 +1,4 @@
-package com.unigpt.plugin.dtoFactory;
+package com.unigpt.plugin.factory;
 
 import com.unigpt.plugin.dto.*;
 

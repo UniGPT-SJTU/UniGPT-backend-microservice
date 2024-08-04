@@ -2,7 +2,7 @@ package com.unigpt.plugin.controllerTest;
 
 import com.unigpt.plugin.dto.BotInfoDTO;
 import com.unigpt.plugin.dto.ResponseDTO;
-import com.unigpt.plugin.dtoFactory.dtoFactory;
+import com.unigpt.plugin.factory.dtoFactory;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
