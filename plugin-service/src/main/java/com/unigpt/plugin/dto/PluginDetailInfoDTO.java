@@ -36,4 +36,17 @@ public class PluginDetailInfoDTO {
         this.asCreator = plugin.getCreator().equals(user);
         this.bots = plugin.getBots().stream().map(BotBriefInfoDTO::new).toList();
     }
+
+    public PluginDetailInfoDTO(Integer id, String name, String creator, Integer creatorId, String description, List<String> photos, String detail, String avatar, boolean asCreator, List<BotBriefInfoDTO> bots) {
+        this.id = id;
+        this.name = name;
+        this.creator = creator;
+        this.creatorId = creatorId;
+        this.description = description;
+        this.photos = photos;
+        this.detail = detail;
+        this.avatar = avatar;
+        this.asCreator = asCreator;
+        this.bots = bots;
+    }
 }

@@ -16,4 +16,11 @@ public class BotBriefInfoDTO {
         this.avatar = bot.getAvatar();
         this.description = bot.getDescription();
     }
+
+    public BotBriefInfoDTO(Integer id, String name, String avatar, String description) {
+        this.id = id;
+        this.name = name;
+        this.avatar = avatar;
+        this.description = description;
+    }
 }
