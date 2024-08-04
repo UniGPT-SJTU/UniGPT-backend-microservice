@@ -11,6 +11,8 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
+import java.util.Objects;
+
 @Data
 @Entity
 @Table(name = "parameter")
@@ -42,4 +44,18 @@ public class Parameter {
 
     public Parameter() {
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Parameter parameter = (Parameter) o;
+        return Objects.equals(id, parameter.id); // Compare using a unique identifier like id
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
+    }
+
 }

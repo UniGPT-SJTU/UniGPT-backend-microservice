@@ -5,6 +5,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 
 import java.util.List;
+import java.util.Objects;
 
 @Data
 @Entity
@@ -85,5 +86,18 @@ public class Plugin {
     // constructor
     public Plugin() {
         // not used
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Plugin plugin = (Plugin) o;
+        return Objects.equals(id, plugin.id); // Compare using a unique identifier like id
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id);
     }
 }

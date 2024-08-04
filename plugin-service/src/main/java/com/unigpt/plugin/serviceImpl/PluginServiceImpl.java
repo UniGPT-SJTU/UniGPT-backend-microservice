@@ -17,6 +17,7 @@ import org.springframework.stereotype.Service;
 //import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.stream.Collectors;
 
 @Service
@@ -59,15 +60,18 @@ public class PluginServiceImpl implements PluginService {
 
         String filePath = "";
         Plugin plugin = new Plugin(dto, user, filePath);
+        pluginRepository.save(plugin);
 
         // Call botServiceClient to create a plugin
-        ResponseEntity<Object> response =  botServiceClient.createPlugin(plugin.getId(), new PluginEditInfoDTO(plugin));
+        ResponseEntity<ResponseDTO> response =  botServiceClient.createPlugin(plugin.getId(), new PluginEditInfoDTO(plugin));
         // No need for undo operation since plugin is not created in pluginRepository yet
-        if(response.getStatusCode().isError()){
+//        if(response.getStatusCode().isError()){
+//            throw new Exception("Failed to create plugin in Bot Microservice");
+//        }
+        if(!Objects.requireNonNull(response.getBody()).getOk()){
             throw new Exception("Failed to create plugin in Bot Microservice");
         }
 
-        pluginRepository.save(plugin);
         return new ResponseDTO(true, "Create plugin successfully");
     }
 

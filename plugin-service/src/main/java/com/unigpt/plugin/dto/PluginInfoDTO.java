@@ -33,4 +33,8 @@ public class PluginInfoDTO {
         this.code = code;
         this.isPublished = isPublished;
     }
+
+    public PluginInfoDTO() {
+        // only for test
+    }
 }
