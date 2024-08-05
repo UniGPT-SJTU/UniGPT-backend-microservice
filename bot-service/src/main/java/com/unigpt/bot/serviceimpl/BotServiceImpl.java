@@ -1,12 +1,12 @@
 package com.unigpt.bot.serviceimpl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.apache.coyote.BadRequestException;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -96,6 +96,7 @@ public class BotServiceImpl implements BotService {
     }
 
     @Override
+    @Cacheable(value = "botBriefInfoMicro", key = "{#userId,#isAdmin,#botId}")
     public BotBriefInfoDTO getBotBriefInfo(Integer userId, Boolean isAdmin, Integer botId) {
         Bot bot = botRepository.findById(botId)
                 .orElseThrow(() -> new NoSuchElementException("Bot not found for ID: " + botId));
@@ -190,6 +191,9 @@ public class BotServiceImpl implements BotService {
         return new ResponseDTO(true, botId);
     }
 
+    @Autowired
+    private CacheManager cacheManager;
+
     @Override
     public ResponseDTO updateBot(Integer userId, Boolean isAdmin, Integer botId, BotEditInfoDTO dto) {
         // 根据id获取bot
@@ -223,6 +227,10 @@ public class BotServiceImpl implements BotService {
         userServiceClient.updateBot(botId, dto.toUserServiceRequest());
         chatServiceClient.updateBot(botId, dto.toChatServiceRequest());
         pluginServiceClient.updateBot(botId, dto.toPluginServiceRequest());
+
+        BotBriefInfoDTO briefInfo = new BotBriefInfoDTO(updatedBot);
+        String key = String.format("%s,%s,%s",userId,isAdmin,botId);
+        Objects.requireNonNull(cacheManager.getCache("botBriefInfoMicro")).put(key, briefInfo);
 
         return new ResponseDTO(true, "Bot updated successfully");
     }
