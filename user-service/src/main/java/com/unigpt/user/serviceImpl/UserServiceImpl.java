@@ -51,6 +51,7 @@ public class UserServiceImpl implements UserService {
         user.setEmail(email);
         user.setAccount(account);
         user.setName(name);
+        userRepository.save(user);
 
         if(botServiceClient.createUser(user.getId(), new UserUpdateRequestDTO(user))
                 .getStatusCode().isError())
@@ -64,7 +65,6 @@ public class UserServiceImpl implements UserService {
                 .getStatusCode().isError())
             throw new RuntimeException("Failed to create user in plugin service");
 
-        userRepository.save(user);
         return user.getId();
     }
 
@@ -84,6 +84,7 @@ public class UserServiceImpl implements UserService {
         targetUser.setName(userUpdateDTO.getName());
         targetUser.setAvatar(userUpdateDTO.getAvatar());
         targetUser.setDescription(userUpdateDTO.getDescription());
+        userRepository.save(targetUser);
 
         if(botServiceClient.updateUser(targetUser.getId(), new UserUpdateRequestDTO(targetUser))
                 .getStatusCode().isError())
@@ -92,8 +93,6 @@ public class UserServiceImpl implements UserService {
         if(chatServiceClient.updateUser(targetUser.getId(), new UserUpdateRequestDTO(targetUser))
                 .getStatusCode().isError())
             throw new RuntimeException("Failed to update user in chat service");
-
-        userRepository.save(targetUser);
     }
 
     // type : id || name

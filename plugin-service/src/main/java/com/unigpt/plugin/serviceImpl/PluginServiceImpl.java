@@ -59,6 +59,7 @@ public class PluginServiceImpl implements PluginService {
 
         String filePath = "";
         Plugin plugin = new Plugin(dto, user, filePath);
+        pluginRepository.save(plugin);
 
         // Call botServiceClient to create a plugin
         ResponseEntity<Object> response =  botServiceClient.createPlugin(plugin.getId(), new PluginEditInfoDTO(plugin));
@@ -67,7 +68,6 @@ public class PluginServiceImpl implements PluginService {
             throw new Exception("Failed to create plugin in Bot Microservice");
         }
 
-        pluginRepository.save(plugin);
         return new ResponseDTO(true, "Create plugin successfully");
     }
 
