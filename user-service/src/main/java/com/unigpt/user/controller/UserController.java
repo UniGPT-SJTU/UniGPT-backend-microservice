@@ -45,6 +45,15 @@ public class UserController {
         }
     }
 
+    @GetMapping("/me")
+    public ResponseEntity<Object> getMe(@RequestHeader(name = "X-User-Id") Integer id) {
+        try {
+            return ResponseEntity.ok(service.findUserById(id));
+        } catch(Exception e) {
+            return ResponseEntity.status(404).body(e.getMessage());
+        }
+    }
+
     @PutMapping("/{userid}")
     public ResponseEntity<Object> updateUserProfile(
             @PathVariable Integer userid,
