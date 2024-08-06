@@ -220,9 +220,15 @@ public class BotServiceImpl implements BotService {
         botRepository.save(updatedBot);
 
         // 向微服务发送请求，更新bot的冗余信息
-        userServiceClient.updateBot(botId, dto.toUserServiceRequest());
-        chatServiceClient.updateBot(botId, dto.toChatServiceRequest());
-        pluginServiceClient.updateBot(botId, dto.toPluginServiceRequest());
+        try{
+            userServiceClient.updateBot(botId, dto.toUserServiceRequest());
+            chatServiceClient.updateBot(botId, dto.toChatServiceRequest());
+            pluginServiceClient.updateBot(botId, dto.toPluginServiceRequest());
+        }
+        catch (Exception e){
+            return new ResponseDTO(false, e.getMessage());
+        }
+
 
         return new ResponseDTO(true, "Bot updated successfully");
     }
