@@ -72,7 +72,8 @@ public class BotServiceImpl implements BotService {
                 .toList();
 
         // 按 history的最近活动时间排序
-        Collections.sort(historyList, Comparator.comparing(History::getLatestChatTime).reversed());
+//        TODO: Remove for test
+//        Collections.sort(historyList, Comparator.comparing(History::getLatestChatTime).reversed());
 
         Integer totalHistoryCount = historyRepository.countByBotAndUserId(bot, userId);
         return new GetBotHistoryOkResponseDTO(totalHistoryCount, historyList);

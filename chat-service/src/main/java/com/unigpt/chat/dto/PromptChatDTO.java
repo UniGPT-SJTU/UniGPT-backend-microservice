@@ -15,4 +15,9 @@ public class PromptChatDTO {
         this.content = chat.getContent();
     }
 
+    // Constructor for testing
+    public PromptChatDTO(ChatType type, String content) {
+        this.type = type;
+        this.content = content;
+    }
 }
