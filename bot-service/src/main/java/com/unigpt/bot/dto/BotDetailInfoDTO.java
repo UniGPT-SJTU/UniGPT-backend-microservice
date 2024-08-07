@@ -41,7 +41,7 @@ public class BotDetailInfoDTO {
         this.photos = bot.getPhotos();
         this.detail = bot.getDetail();
         this.avatar = bot.getAvatar();
-        this.baseModelAPI = bot.getLlmArgs().getBaseModelType().toString();
+//        this.baseModelAPI = bot.getLlmArgs().getBaseModelType().toString();
         this.likeNumber = bot.getLikeNumber();
         this.starNumber = bot.getStarNumber();
         this.liked = bot.getLikeUsers().contains(user);

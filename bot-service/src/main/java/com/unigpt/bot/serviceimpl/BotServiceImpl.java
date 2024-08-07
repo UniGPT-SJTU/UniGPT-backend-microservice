@@ -177,8 +177,8 @@ public class BotServiceImpl implements BotService {
         botRepository.save(newBot);
 
         // 更新用户的createBots列表
-        creatorUser.getCreateBots().add(newBot);
-        userRepository.save(creatorUser);
+//        creatorUser.getCreateBots().add(newBot);
+//        userRepository.save(creatorUser);
 
         String botId = String.valueOf(newBot.getId());
 
