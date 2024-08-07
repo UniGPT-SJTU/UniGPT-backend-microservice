@@ -4,8 +4,6 @@ package com.unigpt.user.service;
 import com.unigpt.user.dto.BotEditInfoDTO;
 import com.unigpt.user.dto.ResponseDTO;
 
-import java.util.List;
-
 public interface BotService {
 //    /**
 //     * @brief 获取机器人列表
@@ -45,19 +43,17 @@ public interface BotService {
      * @brief 创建机器人
      * @param botid 机器人id
      * @param dto 机器人编辑信息
-     * @param userid 用户id
      * @return 创建结果
      */
-    ResponseDTO createBot(BotEditInfoDTO dto, Integer botid, Integer userid) throws Exception;
+    ResponseDTO createBot(BotEditInfoDTO dto, Integer botid) throws Exception;
 //
     /**
      * @brief 更新机器人
      * @param botid 机器人id
      * @param dto 机器人编辑信息
-     * @param userid 用户id
      * @return 更新结果
      */
-    ResponseDTO updateBot(Integer botid, BotEditInfoDTO dto, Integer userid);
+    ResponseDTO updateBot(Integer botid, BotEditInfoDTO dto);
 //
 //    /**
 //     * @brief 删除机器人
