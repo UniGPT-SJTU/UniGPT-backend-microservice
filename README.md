@@ -8,10 +8,11 @@
 本项目的所有数据库都运行在Docker容器中，在任何情况下，每个数据库容器都各自监听在唯一的端口：
 | 数据库容器名称 | 数据库类型   | 端口  | 相关微服务 |
 | ------------ | ---------- | ----- | ----- |
-| user_db      | MySQL      | 3306  | user-service |
+| user_db      | MySQL      | 3311  | user-service |
 | bot_db       | MySQL      | 3307  | bot-service |
 | chat_db      | MySQL      | 3308  | chat-service |
 | plugin_db    | MySQL      | 3309  | plugin-service |
+| auth_db      | MySQL      | 3310  | nginx        |
 | postgresql_db| PostgreSQL | 5432  | chat-service |
 ### 本地运行单个微服务
 在开发过程中，需要本地运行单个微服务后端，此时后端直接运行在操作系统上，与Docker无关，因此后端监听的端口为8080。
