@@ -184,7 +184,7 @@ public class BotServiceImpl implements BotService {
         // 向微服务发送请求，创建bot的冗余信息
         userServiceClient.createBot(newBot.getId(), dto.toUserServiceRequest());
         chatServiceClient.createBot(newBot.getId(), dto.toChatServiceRequest());
-        pluginServiceClient.createBot(userId, dto.toPluginServiceRequest());
+        pluginServiceClient.createBot(newBot.getId(), dto.toPluginServiceRequest());
 
         return new ResponseDTO(true, botId);
     }
