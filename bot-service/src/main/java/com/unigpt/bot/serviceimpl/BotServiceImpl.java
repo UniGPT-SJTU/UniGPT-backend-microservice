@@ -17,6 +17,7 @@ import com.unigpt.bot.client.UserServiceClient;
 import com.unigpt.bot.dto.BotBriefInfoDTO;
 import com.unigpt.bot.dto.BotDetailInfoDTO;
 import com.unigpt.bot.dto.BotEditInfoDTO;
+import com.unigpt.bot.dto.BotHistoryInfoDTO;
 import com.unigpt.bot.dto.CommentDTO;
 import com.unigpt.bot.dto.GetBotsOkResponseDTO;
 import com.unigpt.bot.dto.GetCommentsOkResponseDTO;
@@ -134,6 +135,13 @@ public class BotServiceImpl implements BotService {
         }
 
         return new BotEditInfoDTO(bot);
+    }
+
+    @Override
+    public BotHistoryInfoDTO getBotHistoryInfo(Integer botId) {
+        Bot bot = botRepository.findById(botId)
+                .orElseThrow(() -> new NoSuchElementException("Bot not found for ID: " + botId));
+        return new BotHistoryInfoDTO(bot);
     }
 
     @Override
