@@ -191,7 +191,7 @@ public class BotServiceImpl implements BotService {
 
         // 向微服务发送请求，创建bot的冗余信息
         userServiceClient.createBot(newBot.getId(), dto.toUserServiceRequest());
-        chatServiceClient.createBot(newBot.getId(), dto.toChatServiceRequest());
+        chatServiceClient.createBot(newBot.getId(), dto.toChatServiceRequest(), userId);
         pluginServiceClient.createBot(newBot.getId(), dto.toPluginServiceRequest());
 
         return new ResponseDTO(true, botId);
@@ -230,7 +230,7 @@ public class BotServiceImpl implements BotService {
         // 向微服务发送请求，更新bot的冗余信息
         try{
             userServiceClient.updateBot(botId, dto.toUserServiceRequest());
-            chatServiceClient.updateBot(botId, dto.toChatServiceRequest());
+            chatServiceClient.updateBot(botId, dto.toChatServiceRequest(), userId, isAdmin);
             pluginServiceClient.updateBot(botId, dto.toPluginServiceRequest());
         }
         catch (Exception e){

@@ -1,17 +1,12 @@
 package com.unigpt.user.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import com.unigpt.user.dto.BotEditInfoDTO;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -36,10 +31,6 @@ public class Bot {
     @Column(name = "description", columnDefinition = "VARCHAR(255)")
     private String description;
 
-    @ManyToOne
-    @JoinColumn(name = "creator_id")
-    private User creator;
-
 //    @OneToMany(cascade = CascadeType.ALL)
 //    private List<Comment> comments;
 //
@@ -48,7 +39,7 @@ public class Bot {
 //    @JoinTable(name = "bot_use_plugin", joinColumns = @JoinColumn(name = "bot_id"), inverseJoinColumns = @JoinColumn(name = "plugin_id"))
 //    private List<Plugin> plugins;
 
-    public Bot(BotEditInfoDTO dto, User creator) {
+    public Bot(BotEditInfoDTO dto) {
         this.name = dto.getName();
         this.avatar = dto.getAvatar();
         this.description = dto.getDescription();
@@ -61,7 +52,6 @@ public class Bot {
 //        this.starNumber = 0;
 //        this.likeUsers = new ArrayList<>();
 //        this.starUsers = new ArrayList<>();
-        this.creator = creator;
 //        this.comments = new ArrayList<>();
 //
 //        this.llmArgs = LLMArgs.builder()
@@ -88,6 +78,6 @@ public class Bot {
 //    }
 
     public Bot() {
-        this.creator = new User();
+        // not used
     }
 }

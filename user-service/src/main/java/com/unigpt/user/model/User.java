@@ -11,7 +11,6 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
-import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
 
@@ -45,10 +44,6 @@ public class User {
     @ManyToMany
     @JoinTable(name = "user_used_bot", joinColumns = @JoinColumn(name = "user_id"), inverseJoinColumns = @JoinColumn(name = "bot_id"))
     private List<Bot> usedBots;
-
-    @OneToMany
-    @JoinColumn(name = "creator_id")
-    private List<Bot> createBots;
 
 //    @OneToMany
 //    @JoinColumn(name = "user_id")
@@ -93,9 +88,6 @@ public class User {
     public User() {
         // not used
         this.usedBots = new ArrayList<>();
-        this.createBots = new ArrayList<>();
-
-//        this.histories = new ArrayList<>();
     }
 
 }

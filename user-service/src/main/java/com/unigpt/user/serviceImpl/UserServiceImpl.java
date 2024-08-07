@@ -1,35 +1,41 @@
 package com.unigpt.user.serviceImpl;
 
-import com.unigpt.user.client.BotServiceClient;
-import com.unigpt.user.client.ChatServiceClient;
-import com.unigpt.user.client.PluginServiceClient;
-import com.unigpt.user.dto.*;
-import com.unigpt.user.model.User;
-import com.unigpt.user.model.Bot;
-import com.unigpt.user.repository.BotRepository;
-import com.unigpt.user.repository.UserRepository;
-import com.unigpt.user.service.UserService;
-import com.unigpt.user.utils.PaginationUtils;
-import org.springframework.stereotype.Service;
-
 import java.util.Collections;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.springframework.stereotype.Service;
+
+import com.unigpt.user.client.BotServiceClient;
+import com.unigpt.user.client.ChatServiceClient;
+import com.unigpt.user.client.PluginServiceClient;
+import com.unigpt.user.dto.BotBriefInfoDTO;
+import com.unigpt.user.dto.GetBotsOkResponseDTO;
+import com.unigpt.user.dto.GetUsersOkResponseDTO;
+import com.unigpt.user.dto.ResponseDTO;
+import com.unigpt.user.dto.UserBriefInfoDTO;
+import com.unigpt.user.dto.UserUpdateDTO;
+import com.unigpt.user.dto.UserUpdateRequestDTO;
+import com.unigpt.user.model.Bot;
+import com.unigpt.user.model.User;
+import com.unigpt.user.repository.BotRepository;
+import com.unigpt.user.repository.UserRepository;
+import com.unigpt.user.service.UserService;
+import com.unigpt.user.utils.PaginationUtils;
 
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    private final BotRepository  botRepository;
+    private final BotRepository botRepository;
     private final BotServiceClient botServiceClient;
     private final ChatServiceClient chatServiceClient;
     private final PluginServiceClient pluginServiceClient;
 
     public UserServiceImpl(
             UserRepository userRepository,
-            BotRepository  botRepository,
+            BotRepository botRepository,
             BotServiceClient botServiceClient,
             ChatServiceClient chatServiceClient,
             PluginServiceClient pluginServiceClient) {
@@ -40,7 +46,7 @@ public class UserServiceImpl implements UserService {
         this.pluginServiceClient = pluginServiceClient;
     }
 
-    public Integer createUser(String email, String account, String name){
+    public Integer createUser(String email, String account, String name) {
         // Check if account already exists
         Optional<User> optionalUser = userRepository.findByAccount(account);
         if (optionalUser.isPresent()) {
@@ -53,15 +59,15 @@ public class UserServiceImpl implements UserService {
         user.setName(name);
         userRepository.save(user);
 
-        if(botServiceClient.createUser(user.getId(), new UserUpdateRequestDTO(user))
+        if (botServiceClient.createUser(user.getId(), new UserUpdateRequestDTO(user))
                 .getStatusCode().isError())
             throw new RuntimeException("Failed to create user in bot service");
 
-        if(chatServiceClient.createUser(user.getId(), new UserUpdateRequestDTO(user))
+        if (chatServiceClient.createUser(user.getId(), new UserUpdateRequestDTO(user))
                 .getStatusCode().isError())
             throw new RuntimeException("Failed to create user in chat service");
 
-        if(pluginServiceClient.createUser(user.getId(), user.getName())
+        if (pluginServiceClient.createUser(user.getId(), user.getName())
                 .getStatusCode().isError())
             throw new RuntimeException("Failed to create user in plugin service");
 
@@ -86,11 +92,11 @@ public class UserServiceImpl implements UserService {
         targetUser.setDescription(userUpdateDTO.getDescription());
         userRepository.save(targetUser);
 
-        if(botServiceClient.updateUser(targetUser.getId(), new UserUpdateRequestDTO(targetUser))
+        if (botServiceClient.updateUser(targetUser.getId(), new UserUpdateRequestDTO(targetUser))
                 .getStatusCode().isError())
             throw new RuntimeException("Failed to update user in bot service");
 
-        if(chatServiceClient.updateUser(targetUser.getId(), new UserUpdateRequestDTO(targetUser))
+        if (chatServiceClient.updateUser(targetUser.getId(), new UserUpdateRequestDTO(targetUser))
                 .getStatusCode().isError())
             throw new RuntimeException("Failed to update user in chat service");
     }
@@ -127,7 +133,6 @@ public class UserServiceImpl implements UserService {
                 PaginationUtils.paginate(userBriefInfoDTOs, page, pagesize));
     }
 
-
     public GetBotsOkResponseDTO getUsedBots(Integer userid, Integer page, Integer pageSize) {
         User user = findUserById(userid);
 
@@ -135,14 +140,13 @@ public class UserServiceImpl implements UserService {
         Collections.reverse(usedBots);
 
         List<BotBriefInfoDTO> bots = usedBots.stream()
-                .map(bot -> new BotBriefInfoDTO(bot.getTrueId(), bot.getName(), bot.getDescription(), bot.getAvatar(),
-                        bot.getCreator().equals(user)))
+                .map(bot -> new BotBriefInfoDTO(bot.getTrueId(), bot.getName(), bot.getDescription(), bot.getAvatar()))
                 .collect(Collectors.toList());
 
         return new GetBotsOkResponseDTO(bots.size(), PaginationUtils.paginate(bots, page, pageSize));
     }
-    
-    public ResponseDTO useBot(Integer botId, Integer userId){
+
+    public ResponseDTO useBot(Integer botId, Integer userId) {
         Bot bot = botRepository.findByTrueId(botId).orElseThrow(() -> new NoSuchElementException("Bot not found"));
         User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
 
@@ -154,7 +158,7 @@ public class UserServiceImpl implements UserService {
         return new ResponseDTO(true, "Bot used successfully");
     }
 
-    public ResponseDTO disuseBot(Integer botId, Integer userId){
+    public ResponseDTO disuseBot(Integer botId, Integer userId) {
         Bot bot = botRepository.findByTrueId(botId).orElseThrow(() -> new NoSuchElementException("Bot not found"));
         User user = userRepository.findById(userId).orElseThrow(() -> new NoSuchElementException("User not found"));
 
@@ -165,67 +169,74 @@ public class UserServiceImpl implements UserService {
         userRepository.save(user);
         return new ResponseDTO(true, "Bot disused successfully");
     }
-//
-//    // TODO: 修改BotBriefInfoDTO.asCreator
-//    public GetBotsOkResponseDTO getStarredBots(Integer userid, String token, Integer page, Integer pageSize)
-//            throws AuthenticationException {
-//        User user = findUserById(userid);
-//
-//        List<Bot> starredBots = user.getStarBots();
-//        Collections.reverse(starredBots);
-//
-//        List<BotBriefInfoDTO> bots = starredBots.stream()
-//                .map(bot -> new BotBriefInfoDTO(bot.getId(), bot.getName(), bot.getDescription(), bot.getAvatar(),
-//                        bot.getCreator().equals(user), user.getAsAdmin()))
-//                .collect(Collectors.toList());
-//
-//        return new GetBotsOkResponseDTO(bots.size(), PaginationUtils.paginate(bots, page, pageSize));
-//    }
-//
-//    // TODO: 修改BotBriefInfoDTO.asCreator
-//    public GetBotsOkResponseDTO getCreatedBots(Integer userid, String token, Integer page, Integer pageSize) {
-//        User user = findUserById(userid);
-//        List<Bot> createdBots = user.getCreateBots();
-//        Collections.reverse(createdBots);
-//
-//        List<BotBriefInfoDTO> bots = createdBots.stream()
-//                .map(bot -> new BotBriefInfoDTO(bot.getId(), bot.getName(), bot.getDescription(), bot.getAvatar(),
-//                        bot.getCreator().equals(user), user.getAsAdmin()))
-//                .collect(Collectors.toList());
-//
-//        return new GetBotsOkResponseDTO(bots.size(), PaginationUtils.paginate(bots, page, pageSize));
-//    }
-//
+    //
+    // // TODO: 修改BotBriefInfoDTO.asCreator
+    // public GetBotsOkResponseDTO getStarredBots(Integer userid, String token,
+    // Integer page, Integer pageSize)
+    // throws AuthenticationException {
+    // User user = findUserById(userid);
+    //
+    // List<Bot> starredBots = user.getStarBots();
+    // Collections.reverse(starredBots);
+    //
+    // List<BotBriefInfoDTO> bots = starredBots.stream()
+    // .map(bot -> new BotBriefInfoDTO(bot.getId(), bot.getName(),
+    // bot.getDescription(), bot.getAvatar(),
+    // bot.getCreator().equals(user), user.getAsAdmin()))
+    // .collect(Collectors.toList());
+    //
+    // return new GetBotsOkResponseDTO(bots.size(), PaginationUtils.paginate(bots,
+    // page, pageSize));
+    // }
+    //
+    // // TODO: 修改BotBriefInfoDTO.asCreator
+    // public GetBotsOkResponseDTO getCreatedBots(Integer userid, String token,
+    // Integer page, Integer pageSize) {
+    // User user = findUserById(userid);
+    // List<Bot> createdBots = user.getCreateBots();
+    // Collections.reverse(createdBots);
+    //
+    // List<BotBriefInfoDTO> bots = createdBots.stream()
+    // .map(bot -> new BotBriefInfoDTO(bot.getId(), bot.getName(),
+    // bot.getDescription(), bot.getAvatar(),
+    // bot.getCreator().equals(user), user.getAsAdmin()))
+    // .collect(Collectors.toList());
+    //
+    // return new GetBotsOkResponseDTO(bots.size(), PaginationUtils.paginate(bots,
+    // page, pageSize));
+    // }
+    //
 
-//    public void setBanUser(Integer id, String token, Boolean state) throws AuthenticationException {
-//        User requestUser;
-//        try {
-//            requestUser = authService.getUserByToken(token);
-//        } catch (NoSuchElementException e) {
-//            throw new AuthenticationException("Unauthorized to ban user");
-//        }
-//
-//        if (!requestUser.getAsAdmin()) {
-//            throw new AuthenticationException("Unauthorized to ban user");
-//        }
-//        User targetUser = findUserById(id);
-//        targetUser.setDisabled(state);
-//        userRepository.save(targetUser);
-//    }
-//
-//    public Boolean getBanState(Integer id, String token) throws AuthenticationException {
-//        User requestUser;
-//        try {
-//            requestUser = authService.getUserByToken(token);
-//        } catch (NoSuchElementException e) {
-//            throw new AuthenticationException("Unauthorized to get ban state");
-//        }
-//        if (!requestUser.getAsAdmin()) {
-//            throw new AuthenticationException("Unauthorized to get ban state");
-//        }
-//
-//        User user = findUserById(id);
-//        return user.getDisabled();
-//    }
+    // public void setBanUser(Integer id, String token, Boolean state) throws
+    // AuthenticationException {
+    // User requestUser;
+    // try {
+    // requestUser = authService.getUserByToken(token);
+    // } catch (NoSuchElementException e) {
+    // throw new AuthenticationException("Unauthorized to ban user");
+    // }
+    //
+    // if (!requestUser.getAsAdmin()) {
+    // throw new AuthenticationException("Unauthorized to ban user");
+    // }
+    // User targetUser = findUserById(id);
+    // targetUser.setDisabled(state);
+    // userRepository.save(targetUser);
+    // }
+    //
+    // public Boolean getBanState(Integer id, String token) throws
+    // AuthenticationException {
+    // User requestUser;
+    // try {
+    // requestUser = authService.getUserByToken(token);
+    // } catch (NoSuchElementException e) {
+    // throw new AuthenticationException("Unauthorized to get ban state");
+    // }
+    // if (!requestUser.getAsAdmin()) {
+    // throw new AuthenticationException("Unauthorized to get ban state");
+    // }
+    //
+    // User user = findUserById(id);
+    // return user.getDisabled();
+    // }
 }
-
