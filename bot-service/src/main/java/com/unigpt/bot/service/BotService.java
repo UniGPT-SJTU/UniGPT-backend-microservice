@@ -3,6 +3,7 @@ package com.unigpt.bot.service;
 import com.unigpt.bot.dto.BotBriefInfoDTO;
 import com.unigpt.bot.dto.BotDetailInfoDTO;
 import com.unigpt.bot.dto.BotEditInfoDTO;
+import com.unigpt.bot.dto.BotHistoryInfoDTO;
 import com.unigpt.bot.dto.GetBotsOkResponseDTO;
 import com.unigpt.bot.dto.GetCommentsOkResponseDTO;
 import com.unigpt.bot.dto.ResponseDTO;
@@ -45,6 +46,13 @@ public interface BotService {
      * @return 机器人编辑信息
      */
     BotEditInfoDTO getBotEditInfo(Integer userId, Boolean isAdmin, Integer botId);
+
+    /**
+     * @brief 获取机器人创建历史需要的信息
+     * @param botId 机器人id
+     * @return
+     */
+    BotHistoryInfoDTO getBotHistoryInfo(Integer botId);
 
     /**
      * @brief 创建机器人

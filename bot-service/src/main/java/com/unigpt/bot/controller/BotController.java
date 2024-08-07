@@ -39,13 +39,14 @@ public class BotController {
     public ResponseEntity<Object> getBotProfile(
             @PathVariable Integer id,
             @RequestParam String info,
-            @RequestHeader(name = "X-User-Id") Integer userId,
-            @RequestHeader(name = "X-Is-Admin") Boolean isAdmin) {
+            @RequestHeader(name = "X-User-Id", defaultValue = "0") Integer userId,
+            @RequestHeader(name = "X-Is-Admin", defaultValue = "false") Boolean isAdmin) {
         try {
             return switch (info) {
                 case "brief" -> ResponseEntity.ok(service.getBotBriefInfo(userId, isAdmin, id));
                 case "detail" -> ResponseEntity.ok(service.getBotDetailInfo(userId, isAdmin, id));
                 case "edit" -> ResponseEntity.ok(service.getBotEditInfo(userId, isAdmin, id));
+                case "history" -> ResponseEntity.ok(service.getBotHistoryInfo(id));
                 default -> ResponseEntity
                         .status(HttpStatus.BAD_REQUEST)
                         .body(new ResponseDTO(false, "Invalid info parameter"));
