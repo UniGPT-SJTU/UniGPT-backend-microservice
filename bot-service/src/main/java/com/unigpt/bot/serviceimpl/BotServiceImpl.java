@@ -1,12 +1,11 @@
 package com.unigpt.bot.serviceimpl;
 
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.apache.coyote.BadRequestException;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -95,7 +94,7 @@ public class BotServiceImpl implements BotService {
         return new GetBotsOkResponseDTO(botsTotalCount, bots);
     }
 
-    @Override
+    @Cacheable(value = "botBriefInfo", key = "{#userId,#isAdmin,#botId}")
     public BotBriefInfoDTO getBotBriefInfo(Integer userId, Boolean isAdmin, Integer botId) {
         Bot bot = botRepository.findById(botId)
                 .orElseThrow(() -> new NoSuchElementException("Bot not found for ID: " + botId));
@@ -191,6 +190,7 @@ public class BotServiceImpl implements BotService {
     }
 
     @Override
+    @CacheEvict(value = "botBriefInfo", key = "{#userId,#isAdmin,#botId}")
     public ResponseDTO updateBot(Integer userId, Boolean isAdmin, Integer botId, BotEditInfoDTO dto) {
         // 根据id获取bot
         Bot updatedBot = botRepository.findById(botId)
@@ -220,9 +220,15 @@ public class BotServiceImpl implements BotService {
         botRepository.save(updatedBot);
 
         // 向微服务发送请求，更新bot的冗余信息
-        userServiceClient.updateBot(botId, dto.toUserServiceRequest());
-        chatServiceClient.updateBot(botId, dto.toChatServiceRequest());
-        pluginServiceClient.updateBot(botId, dto.toPluginServiceRequest());
+        try{
+            userServiceClient.updateBot(botId, dto.toUserServiceRequest());
+            chatServiceClient.updateBot(botId, dto.toChatServiceRequest());
+            pluginServiceClient.updateBot(botId, dto.toPluginServiceRequest());
+        }
+        catch (Exception e){
+            return new ResponseDTO(false, e.getMessage());
+        }
+
 
         return new ResponseDTO(true, "Bot updated successfully");
     }
