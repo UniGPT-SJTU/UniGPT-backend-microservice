@@ -17,4 +17,11 @@ public class BotInfoDTO {
     public BotInfoDTO() {
         // not used
     }
+
+    public BotInfoDTO(String name, String avatar, String description, List<Integer> plugin_ids) {
+        this.name = name;
+        this.avatar = avatar;
+        this.description = description;
+        this.plugin_ids = plugin_ids;
+    }
 }

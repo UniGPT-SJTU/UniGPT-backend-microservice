@@ -3,7 +3,9 @@ package com.unigpt.bot.serviceimpl;
 import java.util.*;
 import java.util.stream.Collectors;
 
+import com.unigpt.bot.producer.KafkaProducer;
 import org.apache.coyote.BadRequestException;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
@@ -189,6 +191,9 @@ public class BotServiceImpl implements BotService {
         return new ResponseDTO(true, botId);
     }
 
+    @Autowired
+    private KafkaProducer kafkaProducer;
+
     @Override
     @CacheEvict(value = "botBriefInfo", key = "{#userId,#isAdmin,#botId}")
     public ResponseDTO updateBot(Integer userId, Boolean isAdmin, Integer botId, BotEditInfoDTO dto) {
@@ -223,7 +228,8 @@ public class BotServiceImpl implements BotService {
         try{
             userServiceClient.updateBot(botId, dto.toUserServiceRequest());
             chatServiceClient.updateBot(botId, dto.toChatServiceRequest());
-            pluginServiceClient.updateBot(botId, dto.toPluginServiceRequest());
+//            pluginServiceClient.updateBot(botId, dto.toPluginServiceRequest());
+            kafkaProducer.updateBotToPluginService(botId, dto.toPluginServiceRequest());
         }
         catch (Exception e){
             return new ResponseDTO(false, e.getMessage());
