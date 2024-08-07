@@ -51,6 +51,7 @@ public class BotEditInfoDTO {
     }
 
     public UpdateBotInfoRequestToPluginServiceDTO toPluginServiceRequest() {
-        return new UpdateBotInfoRequestToPluginServiceDTO(name, avatar);
+        return new UpdateBotInfoRequestToPluginServiceDTO(name, avatar, description,
+                plugins.stream().map(plugin -> plugin.getId()).toList());
     }
 }
