@@ -63,7 +63,7 @@ public class PluginServiceImpl implements PluginService {
                 .orElseThrow(() -> new NoSuchElementException("User not found for ID: " + userid));
 
         // 构建目标文件路径
-        String directoryPath = "src/main/resources/test/" + user.getName();
+        String directoryPath = System.getProperty("java.io.tmpdir") + "/test/" + user.getName();
         String filePath = directoryPath + "/" + dto.getName() + ".py";
 
         // 判断文件是否存在，如果存在则清除
