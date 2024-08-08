@@ -30,6 +30,8 @@ public class DockerServiceImpl implements DockerService {
             Path tempDir = Files.createTempDirectory("docker_temp");
             tempDir.toFile().deleteOnExit();
 
+            System.out.println("file path: " + filePath);
+
             // 提取run.py文件到临时目录
             String resourcePath = "func/run.py";  // 资源路径修改为相对于类加载器的路径
             System.out.println("Resource Path: " + resourcePath);
@@ -42,7 +44,7 @@ public class DockerServiceImpl implements DockerService {
             String[] command = {
                 "docker", "run", "--rm",
                 "-v", filePath + ":/app/" + moduleName + ".py",
-                "-v", runScriptPath.toString() + ":/app/run.py",
+                "-v", "/home/uni/UniGPT-backend-microservice/plugin-service/src/main/resources/func/run.py" + ":/app/run.py",
                 "mytest_py",
                 "python3", "run.py",
                 moduleName,
