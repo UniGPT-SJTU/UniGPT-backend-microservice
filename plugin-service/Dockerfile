@@ -10,6 +10,10 @@ FROM openjdk:17-jdk-slim
 WORKDIR /app
 COPY --from=build /app/target/*.jar app.jar
 
+# 设置代理环境变量
+ENV HUAWEICLOUD_SDK_AK=C0HLZ2JBNJNX156VWRLU
+ENV HUAWEICLOUD_SDK_SK=rVUbpBGPlVYdhti0H6BtwdTdKNTxxYNnoKTEeK5R
+
 EXPOSE 8080
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
