@@ -1,5 +1,6 @@
 package com.unigpt.plugin.controller;
 
+import com.unigpt.plugin.dto.PluginCreateTestDTO;
 import com.unigpt.plugin.dto.PluginInfoDTO;
 import com.unigpt.plugin.dto.ResponseDTO;
 import com.unigpt.plugin.service.PluginService;
@@ -23,6 +24,18 @@ public class PluginController {
             @RequestHeader("X-User-Id") Integer userid){
         try {
             return ResponseEntity.ok(pluginService.createPlugin(dto, userid));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(false, e.getMessage()));
+        }
+    }
+
+    @PostMapping("/test")
+    public ResponseEntity<Object> testCreatePlugin(
+            @RequestBody PluginCreateTestDTO dto,
+            @RequestHeader("X-User-Id") Integer userid){
+        try {
+            return ResponseEntity.ok(pluginService.testCreatePlugin(dto, userid));
         } catch (Exception e) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND)
                     .body(new ResponseDTO(false, e.getMessage()));
