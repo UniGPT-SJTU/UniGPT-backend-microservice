@@ -7,10 +7,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-
 @RestController
 @RequestMapping("/internal/plugins")
 public class PluginController {
+
     PluginService pluginService;
 
     public PluginController(PluginService pluginService) {
@@ -19,8 +19,8 @@ public class PluginController {
 
     @PostMapping
     public ResponseEntity<Object> createPlugin(
-            @RequestBody PluginInfoDTO dto,
-            @RequestHeader("X-User-Id") Integer userid){
+            @RequestBody PluginCreateDTO dto,
+            @RequestHeader("X-User-Id") Integer userid) {
         try {
             return ResponseEntity.ok(pluginService.createPlugin(dto, userid));
         } catch (Exception e) {
@@ -34,7 +34,7 @@ public class PluginController {
             @RequestParam(defaultValue = "") String q,
             @RequestParam(defaultValue = "latest") String order,
             @RequestParam(defaultValue = "0") Integer page,
-            @RequestParam(defaultValue = "20") Integer pagesize){
+            @RequestParam(defaultValue = "20") Integer pagesize) {
         try {
             return ResponseEntity.ok(pluginService.getPlugins(q, order, page, pagesize));
         } catch (Exception e) {
@@ -46,7 +46,7 @@ public class PluginController {
     @GetMapping("/{pluginid}")
     public ResponseEntity<Object> getPluginInfo(
             @PathVariable Integer pluginid,
-            @RequestHeader("X-User-Id") Integer userid){
+            @RequestHeader("X-User-Id") Integer userid) {
         try {
             return ResponseEntity.ok(pluginService.getPluginInfo(pluginid, userid));
         } catch (Exception e) {

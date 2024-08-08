@@ -33,6 +33,7 @@ import java.util.zip.ZipOutputStream;
 
 @Service
 public class PluginServiceImpl implements PluginService {
+
     private final PluginRepository pluginRepository;
     private final UserRepository userRepository;
     private final BotServiceClient botServiceClient;
@@ -46,12 +47,11 @@ public class PluginServiceImpl implements PluginService {
         this.botServiceClient = botServiceClient;
     }
 
-
-    public ResponseDTO createPlugin(PluginInfoDTO dto, Integer userid) throws Exception {
+    public ResponseDTO createPlugin(PluginCreateDTO dto, Integer userid) throws Exception {
         User user = userRepository.findByTrueId(userid)
                 .orElseThrow(() -> new NoSuchElementException("User not found for ID: " + userid));
 
-////        // 构建目标文件路径
+        ////        // 构建目标文件路径
 ////        String directoryPath = "src/main/resources/" + user.getAccount();
 ////        String filePath = directoryPath + "/" + dto.getName() + ".py";
 ////
@@ -170,7 +170,7 @@ public class PluginServiceImpl implements PluginService {
         return new GetPluginsOkResponseDTO(plugins.size(), PaginationUtils.paginate(plugins, page, pageSize));
     }
 
-    public PluginDetailInfoDTO getPluginInfo(Integer pluginid, Integer userid){
+    public PluginDetailInfoDTO getPluginInfo(Integer pluginid, Integer userid) {
 
         Plugin plugin = pluginRepository.findById(pluginid)
                 .orElseThrow(() -> new NoSuchElementException("Plugin not found for ID: " + pluginid));
@@ -197,7 +197,6 @@ public class PluginServiceImpl implements PluginService {
             zos.closeEntry();
         }
     }
-
 
     public String uploadFunction(String fileName, String functionName) throws IOException {
 
