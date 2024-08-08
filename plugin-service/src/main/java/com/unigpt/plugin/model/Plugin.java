@@ -55,6 +55,11 @@ public class Plugin {
     @ManyToMany(mappedBy = "plugins")
     private List<Bot> bots;
 
+
+    // 这个插件在华为云functiongraph上的urn
+    @Column(name = "fg_urn")
+    private String urn;
+
     // constructor
     public Plugin(String name, String description, List<Parameter> parameters, String url, User creator, String avatar, List<String> photos, String detail, Boolean isPublished) {
         this.name = name;
@@ -68,7 +73,7 @@ public class Plugin {
         this.isPublished = isPublished;
     }
 
-    public Plugin(PluginInfoDTO dto, User user, String url) {
+    public Plugin(PluginInfoDTO dto, User user, String url, String urn) {
         this.name = dto.getName();
         this.description = dto.getDescription();
 
@@ -80,6 +85,7 @@ public class Plugin {
         this.isPublished = dto.getIsPublished();
         // for parameters
         this.parameters = dto.getParameters().stream().map(p -> new Parameter(p, this)).toList();
+        this.urn = urn;
     }
 
     // constructor
