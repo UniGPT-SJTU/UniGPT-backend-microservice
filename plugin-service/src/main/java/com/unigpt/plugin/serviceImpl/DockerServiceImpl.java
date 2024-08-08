@@ -2,42 +2,56 @@ package com.unigpt.plugin.serviceImpl;
 
 import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.StandardCopyOption;
 import java.util.List;
 import java.util.stream.Collectors;
 
-import com.unigpt.plugin.service.DockerService;
 import org.json.JSONObject;
 import org.springframework.stereotype.Service;
+
+import com.unigpt.plugin.service.DockerService;
 
 @Service
 public class DockerServiceImpl implements DockerService {
 
     public String invokeFunction(String username, String moduleName, String functionName, List<String> params) {
         try {
-
             // 获取当前工作目录
             String currentDir = new File("").getAbsolutePath();
-            String moduleScriptPath = new File(currentDir, "src/main/resources/" + username + "/" + moduleName + ".py").getAbsolutePath();
-            String runScriptPath = new File(currentDir, "src/main/resources/func/run.py").getAbsolutePath();
+
+            // 创建临时目录
+            Path tempDir = Files.createTempDirectory("docker_temp");
+            tempDir.toFile().deleteOnExit();
+
+            // 提取资源文件到临时目录
+            Path moduleScriptPath = extractResourceToTempDir("src/main/resources/" + username + "/" + moduleName + ".py", tempDir);
+            Path runScriptPath = extractResourceToTempDir("src/main/resources/func/run.py", tempDir);
+
             JSONObject jsonParams = new JSONObject();
             jsonParams.put("params", params);
 
             // 构建Docker命令
             String[] command = {
-                    "docker", "run", "--rm",
-                    "-v", moduleScriptPath + ":/app/" + moduleName + ".py",
-                    "-v", runScriptPath + ":/app/run.py",
-                    "mytest_py",
-                    "python3", "run.py",
-                    moduleName,
-                    functionName,
-                    jsonParams.toString()
+                "docker", "run", "--rm",
+                "-v", moduleScriptPath.toString() + ":/app/" + moduleName + ".py",
+                "-v", runScriptPath.toString() + ":/app/run.py",
+                "mytest_py",
+                "python3", "run.py",
+                moduleName,
+                functionName,
+                jsonParams.toString()
             };
 
             // 执行命令
             ProcessBuilder pb = new ProcessBuilder(command);
-            pb.directory(new File(currentDir, "src/main/resources/func"));
+            pb.directory(tempDir.toFile());
             Process process = pb.start();
 
             BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()));
@@ -55,6 +69,17 @@ public class DockerServiceImpl implements DockerService {
         } catch (Exception e) {
             e.printStackTrace();
             return new JSONObject().put("error", "Exception occurred").put("details", e.getMessage()).toString();
+        }
+    }
+
+    private Path extractResourceToTempDir(String resourcePath, Path tempDir) throws IOException {
+        try (InputStream resourceStream = getClass().getClassLoader().getResourceAsStream(resourcePath)) {
+            if (resourceStream == null) {
+                throw new FileNotFoundException("Resource not found: " + resourcePath);
+            }
+            Path tempFile = tempDir.resolve(Paths.get(resourcePath).getFileName().toString());
+            Files.copy(resourceStream, tempFile, StandardCopyOption.REPLACE_EXISTING);
+            return tempFile;
         }
     }
 }
