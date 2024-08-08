@@ -19,7 +19,7 @@ ENV HUAWEICLOUD_SDK_SK=rVUbpBGPlVYdhti0H6BtwdTdKNTxxYNnoKTEeK5R
 ENV http_proxy="http://192.168.0.9:7890"
 ENV https_proxy="http://192.168.0.9:7890"
 
-RUN apt-get update && apt-get install -y docker && apt-get clean && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y docker docker.io && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 EXPOSE 8080
 
