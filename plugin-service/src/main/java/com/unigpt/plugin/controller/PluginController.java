@@ -25,7 +25,7 @@ public class PluginController {
         this.pluginService = pluginService;
     }
 
-    @PostMapping
+    @PostMapping("/create")
     public ResponseEntity<Object> createPlugin(
             @RequestBody PluginCreateDTO dto,
             @RequestHeader("X-User-Id") Integer userid) {
