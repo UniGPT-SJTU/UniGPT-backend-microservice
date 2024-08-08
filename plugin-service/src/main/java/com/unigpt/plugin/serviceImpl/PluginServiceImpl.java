@@ -6,17 +6,15 @@ import com.unigpt.plugin.client.BotServiceClient;
 import com.unigpt.plugin.dto.*;
 import com.unigpt.plugin.model.Plugin;
 import com.unigpt.plugin.model.User;
-import com.unigpt.plugin.service.DockerService;
 import com.unigpt.plugin.service.PluginService;
 import com.unigpt.plugin.utils.PaginationUtils;
-import org.json.JSONObject;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.nio.file.StandardOpenOption;
+//import java.nio.file.Files;
+//import java.nio.file.Path;
+//import java.nio.file.Paths;
+//import java.nio.file.StandardOpenOption;
 import java.util.List;
 import java.util.NoSuchElementException;
 import java.util.stream.Collectors;
@@ -26,17 +24,14 @@ public class PluginServiceImpl implements PluginService {
     private final PluginRepository pluginRepository;
     private final UserRepository userRepository;
     private final BotServiceClient botServiceClient;
-    private final DockerService dockerService;
 
     public PluginServiceImpl(
             PluginRepository pluginRepository,
             UserRepository userRepository,
-            BotServiceClient botServiceClient,
-            DockerService dockerService) {
+            BotServiceClient botServiceClient) {
         this.pluginRepository = pluginRepository;
         this.userRepository = userRepository;
         this.botServiceClient = botServiceClient;
-        this.dockerService = dockerService;
     }
 
 
@@ -106,40 +101,6 @@ public class PluginServiceImpl implements PluginService {
         }
         return new PluginDetailInfoDTO(plugin, user);
     }
-
-    public ResponseDTO testCreatePlugin(PluginCreateTestDTO dto, Integer userid) throws Exception{
-        User user = userRepository.findByTrueId(userid)
-                .orElseThrow(() -> new NoSuchElementException("User not found for ID: " + userid));
-
-        // 构建目标文件路径
-        String directoryPath = "src/main/resources/test/" + user.getName();
-        String filePath = directoryPath + "/" + dto.getName() + ".py";
-
-        // 判断文件是否存在，如果存在则清除
-        if (Files.exists(Paths.get(filePath))) {
-            Files.delete(Paths.get(filePath));
-        }
-
-        // 创建目录
-        Path path = Paths.get(directoryPath);
-        Files.createDirectories(path);
-
-        // 将code字段的内容写入到文件中
-        Path file = Paths.get(filePath);
-        Files.writeString(file, dto.getCode(), StandardOpenOption.CREATE);
-
-        // 调用dockerService执行测试
-        String output = dockerService.invokeFunction("test/" + user.getName(), dto.getName(), "handler", dto.getParamsValue());
-
-        // 解析output为JSONObject来检查是否有error字段
-        JSONObject jsonResponse = new JSONObject(output);
-        boolean isSuccess = !jsonResponse.has("error");
-
-        // 删除测试文件
-        Files.delete(Paths.get(filePath));
-
-        return new ResponseDTO(isSuccess, output);
-    }
 //
 //    @Override
 //    public PluginEditInfoDTO getPluginEditInfo(Integer id, String token) {
@@ -156,4 +117,37 @@ public class PluginServiceImpl implements PluginService {
 //    }
 //
 //
+//    @Override
+//    public ResponseDTO testCreatePlugin(PluginCreateTestDTO dto, String token) throws Exception {
+//        User user = authService.getUserByToken(token);
+//
+//        // 构建目标文件路径
+//        String directoryPath = "src/main/resources/test/" + user.getAccount();
+//        String filePath = directoryPath + "/" + dto.getName() + ".py";
+//
+//        // 判断文件是否存在，如果存在则清除
+//        if (Files.exists(Paths.get(filePath))) {
+//            Files.delete(Paths.get(filePath));
+//        }
+//
+//        // 创建目录
+//        Path path = Paths.get(directoryPath);
+//        Files.createDirectories(path);
+//
+//        // 将code字段的内容写入到文件中
+//        Path file = Paths.get(filePath);
+//        Files.writeString(file, dto.getCode(), StandardOpenOption.CREATE);
+//
+//        // 调用dockerService执行测试
+//        String output = dockerService.invokeFunction("test/" + user.getAccount(), dto.getName(), "handler", dto.getParamsValue());
+//
+//        // 解析output为JSONObject来检查是否有error字段
+//        JSONObject jsonResponse = new JSONObject(output);
+//        boolean isSuccess = !jsonResponse.has("error");
+//
+//        // 删除测试文件
+//        Files.delete(Paths.get(filePath));
+//
+//        return new ResponseDTO(isSuccess, output);
+//    }
 }
