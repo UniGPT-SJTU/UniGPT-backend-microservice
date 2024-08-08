@@ -14,6 +14,12 @@ public class BotPluginInfoDTO {
     List<ParameterDTO> parameters;
 
     public BotPluginInfoDTO(Plugin plugin){
-//        TODO
+        this.name = plugin.getName();
+        this.creator = plugin.getCreator().getName();
+        this.description = plugin.getDescription();
+        this.urn = plugin.getUrn();
+        this.parameters = plugin.getParameters().stream()
+                .map(ParameterDTO::new)
+                .toList();
     }
 }
