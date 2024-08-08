@@ -2,6 +2,7 @@ package com.unigpt.plugin.service;
 
 import com.unigpt.plugin.dto.GetPluginsOkResponseDTO;
 import com.unigpt.plugin.dto.PluginCreateDTO;
+import com.unigpt.plugin.dto.PluginCreateTestDTO;
 import com.unigpt.plugin.dto.PluginDetailInfoDTO;
 import com.unigpt.plugin.dto.ResponseDTO;
 

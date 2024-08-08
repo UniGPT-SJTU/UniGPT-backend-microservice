@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.unigpt.plugin.dto.PluginCreateDTO;
+import com.unigpt.plugin.dto.PluginCreateTestDTO;
 import com.unigpt.plugin.dto.ResponseDTO;
 import com.unigpt.plugin.service.PluginService;
 
@@ -40,7 +41,7 @@ public class PluginController {
     @PostMapping("/test")
     public ResponseEntity<Object> testCreatePlugin(
             @RequestBody PluginCreateTestDTO dto,
-            @RequestHeader("X-User-Id") Integer userid){
+            @RequestHeader("X-User-Id") Integer userid) {
         try {
             return ResponseEntity.ok(pluginService.testCreatePlugin(dto, userid));
         } catch (Exception e) {

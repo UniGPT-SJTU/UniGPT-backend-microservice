@@ -14,6 +14,7 @@ import java.util.stream.Collectors;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
+import org.json.JSONObject;
 import org.springframework.stereotype.Service;
 
 import com.huaweicloud.sdk.core.auth.BasicCredentials;
@@ -29,6 +30,7 @@ import com.unigpt.plugin.client.BotServiceClient;
 import com.unigpt.plugin.dto.GetPluginsOkResponseDTO;
 import com.unigpt.plugin.dto.PluginBriefInfoDTO;
 import com.unigpt.plugin.dto.PluginCreateDTO;
+import com.unigpt.plugin.dto.PluginCreateTestDTO;
 import com.unigpt.plugin.dto.PluginDetailInfoDTO;
 import com.unigpt.plugin.dto.ResponseDTO;
 import com.unigpt.plugin.model.Plugin;
@@ -54,6 +56,40 @@ public class PluginServiceImpl implements PluginService {
         this.userRepository = userRepository;
         this.botServiceClient = botServiceClient;
         this.dockerService = dockerService;
+    }
+
+    public ResponseDTO testCreatePlugin(PluginCreateTestDTO dto, Integer userid) throws Exception {
+        User user = userRepository.findByTrueId(userid)
+                .orElseThrow(() -> new NoSuchElementException("User not found for ID: " + userid));
+
+        // 构建目标文件路径
+        String directoryPath = "src/main/resources/test/" + user.getName();
+        String filePath = directoryPath + "/" + dto.getName() + ".py";
+
+        // 判断文件是否存在，如果存在则清除
+        if (Files.exists(Paths.get(filePath))) {
+            Files.delete(Paths.get(filePath));
+        }
+
+        // 创建目录
+        Path path = Paths.get(directoryPath);
+        Files.createDirectories(path);
+
+        // 将code字段的内容写入到文件中
+        Path file = Paths.get(filePath);
+        Files.writeString(file, dto.getCode(), StandardOpenOption.CREATE);
+
+        // 调用dockerService执行测试
+        String output = dockerService.invokeFunction("test/" + user.getName(), dto.getName(), "handler", dto.getParamsValue());
+
+        // 解析output为JSONObject来检查是否有error字段
+        JSONObject jsonResponse = new JSONObject(output);
+        boolean isSuccess = !jsonResponse.has("error");
+
+        // 删除测试文件
+        Files.delete(Paths.get(filePath));
+
+        return new ResponseDTO(isSuccess, output);
     }
 
     public ResponseDTO createPlugin(PluginCreateDTO dto, Integer userid) throws Exception {
