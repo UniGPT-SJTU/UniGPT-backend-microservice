@@ -45,17 +45,4 @@ public class BotController {
                     .body(new ResponseDTO(false, e.getMessage()));
         }
     }
-
-    @GetMapping("/{botid}/plugins")
-    public ResponseEntity<Object> getPlugins(@PathVariable Integer botid) {
-        try {
-            return ResponseEntity.ok(botService.getPlugins(botid));
-        } catch (NoSuchElementException e) {
-            return ResponseEntity.status(HttpStatus.NOT_FOUND)
-                    .body(new ResponseDTO(false, e.getMessage()));
-        } catch (Exception e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
-                    .body(new ResponseDTO(false, e.getMessage()));
-        }
-    }
 }

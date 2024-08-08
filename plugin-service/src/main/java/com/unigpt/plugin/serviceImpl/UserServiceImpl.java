@@ -14,7 +14,7 @@ public class UserServiceImpl implements UserService {
         this.userRepository = userRepository;
     }
 
-    public ResponseDTO createUser(Integer userid, String name, String account){
+    public ResponseDTO createUser(Integer userid, String name){
         // check if userid or username already exists
         if(userRepository.findByTrueId(userid).isPresent())
             return new ResponseDTO(false, "User with id " + userid + " already exists");
@@ -22,7 +22,7 @@ public class UserServiceImpl implements UserService {
             return new ResponseDTO(false, "User with name " + name + " already exists");
 
         // create user
-        userRepository.save(new User(userid, name, account));
+        userRepository.save(new User(userid, name));
         return new ResponseDTO(true, "User created successfully");
     }
 }

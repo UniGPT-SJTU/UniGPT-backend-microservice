@@ -3,7 +3,6 @@ package com.unigpt.plugin.serviceImpl;
 import com.unigpt.plugin.Repository.BotRepository;
 import com.unigpt.plugin.Repository.PluginRepository;
 import com.unigpt.plugin.dto.BotInfoDTO;
-import com.unigpt.plugin.dto.BotPluginInfoDTO;
 import com.unigpt.plugin.dto.ResponseDTO;
 import com.unigpt.plugin.model.Bot;
 import com.unigpt.plugin.model.Plugin;
@@ -62,14 +61,5 @@ public class BotServiceImpl implements BotService {
         botRepository.save(bot);
 
         return new ResponseDTO(true, "Bot updated successfully");
-    }
-
-    public List<BotPluginInfoDTO> getPlugins(Integer botid){
-        Bot bot = botRepository.findByTrueId(botid)
-                .orElseThrow(() -> new NoSuchElementException("Bot not found for ID: " + botid));
-
-        return bot.getPlugins().stream()
-                .map(plugin -> new BotPluginInfoDTO(plugin))
-                .collect(Collectors.toList());
     }
 }
