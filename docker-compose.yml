@@ -76,6 +76,8 @@ services:
       # TODO: 配置代理
 
   plugin_service:
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
     build:
       context: ./plugin-service
       dockerfile: Dockerfile
