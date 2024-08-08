@@ -14,6 +14,13 @@ COPY --from=build /app/target/*.jar app.jar
 ENV HUAWEICLOUD_SDK_AK=C0HLZ2JBNJNX156VWRLU
 ENV HUAWEICLOUD_SDK_SK=rVUbpBGPlVYdhti0H6BtwdTdKNTxxYNnoKTEeK5R
 
+
+# 设置代理环境变量
+ENV http_proxy="http://192.168.0.9:7890"
+ENV https_proxy="http://192.168.0.9:7890"
+
+RUN apt-get update && apt-get install -y docker && apt-get clean && rm -rf /var/lib/apt/lists/*
+
 EXPOSE 8080
 
 ENTRYPOINT ["java", "-jar", "app.jar"]
