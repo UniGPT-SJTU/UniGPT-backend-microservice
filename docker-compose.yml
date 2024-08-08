@@ -73,6 +73,7 @@ services:
 
       USER_SERVICE_URL: http://userService:8080
       BOT_SERVICE_URL: http://botService:8080
+      PLUGIN_SERVICE_URL: http://pluginService:8080
 
       # TODO: 配置代理
 

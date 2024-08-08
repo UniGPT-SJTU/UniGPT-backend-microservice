@@ -25,4 +25,5 @@ export HTTP_PROXY_PORT="7890"
 
 export USER_SERVICE_URL="http://localhost:8082"
 export BOT_SERVICE_URL="http://localhost:8083"
+export PLUGIN_SERVICE_URL="http://localhost:8084"
 ```
