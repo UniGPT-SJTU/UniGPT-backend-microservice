@@ -2,6 +2,7 @@ package com.unigpt.plugin.serviceImpl;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -72,10 +73,16 @@ public class PluginServiceImpl implements PluginService {
         Path file = Paths.get(filePath);
         Files.writeString(file, dto.getCode(), StandardOpenOption.CREATE);
 
+        System.out.println("filePath: " + filePath);
+
         // 拷贝index.py文件，index.py文件在src/main/resources/common/index.py
-        Path indexFile = Paths.get("src/main/resources/common/index.py");
-        Path targetIndexFile = Paths.get(directoryPath + "/index.py");
-        Files.copy(indexFile, targetIndexFile);
+        try (InputStream indexFileStream = getClass().getClassLoader().getResourceAsStream("common/index.py")) {
+            if (indexFileStream == null) {
+                throw new RuntimeException("Resource not found: common/index.py");
+            }
+            Path targetIndexFile = Paths.get(directoryPath + "/index.py");
+            Files.copy(indexFileStream, targetIndexFile);
+        }
 
         // 将index.py和name.py文件打包成zip文件
         String zipFileName = "index" + ".zip";
@@ -91,14 +98,18 @@ public class PluginServiceImpl implements PluginService {
         Files.delete(Paths.get(directoryPath + "/index.py"));
 
         // 拷贝yaml文件  yaml文件在src/main/resources/common/common.yaml， 拷贝后命名为DTO的name字段
-        Path yamlFile = Paths.get("src/main/resources/common/common.yaml");
-        Path targetYamlFile = Paths.get(directoryPath + "/" + dto.getName() + ".yaml");
-        Files.copy(yamlFile, targetYamlFile);
+        try (InputStream yamlFileStream = getClass().getClassLoader().getResourceAsStream("common/common.yaml")) {
+            if (yamlFileStream == null) {
+                throw new RuntimeException("Resource not found: common/common.yaml");
+            }
+            Path targetYamlFile = Paths.get(directoryPath + "/" + dto.getName() + ".yaml");
+            Files.copy(yamlFileStream, targetYamlFile);
+        }
 
         // 将yaml文件和index.zip文件打包成zip文件
         String zipFileName2 = dto.getName() + ".zip";
         try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(Paths.get(zipFileName2)))) {
-            addToZipFile(new File(targetYamlFile.toString()), zos);
+            addToZipFile(new File(directoryPath + "/" + dto.getName() + ".yaml"), zos);
             addToZipFile(new File(zipFileName), zos);
         } catch (IOException e) {
             e.printStackTrace();
@@ -106,7 +117,9 @@ public class PluginServiceImpl implements PluginService {
 
         // 删除index.zip文件和yaml文件
         Files.delete(Paths.get(zipFileName));
-        Files.delete(Paths.get(targetYamlFile.toString()));
+        Files.delete(Paths.get(directoryPath + "/" + dto.getName() + ".yaml"));
+
+        System.out.println("zipFileName2: " + zipFileName2);
 
         String functionName = user.getAccount() + "_" + dto.getName();
 
@@ -124,6 +137,67 @@ public class PluginServiceImpl implements PluginService {
         return new ResponseDTO(true, "Create plugin successfully");
     }
 
+    // public ResponseDTO createPlugin(PluginCreateDTO dto, Integer userid) throws Exception {
+    //     User user = userRepository.findByTrueId(userid)
+    //             .orElseThrow(() -> new NoSuchElementException("User not found for ID: " + userid));
+    //     // 构建目标文件路径
+    //     String directoryPath = "src/main/resources/" + user.getAccount() + "/" + dto.getName();
+    //     String filePath = directoryPath + "/" + dto.getName() + ".py";
+    //     // 判断文件是否存在，如果存在则抛出异常
+    //     if (Files.exists(Paths.get(filePath))) {
+    //         return new ResponseDTO(false, "Plugin already exists");
+    //     }
+    //     // 创建目录
+    //     Path path = Paths.get(directoryPath);
+    //     Files.createDirectories(path);
+    //     // 将code字段的内容写入到文件中
+    //     Path file = Paths.get(filePath);
+    //     Files.writeString(file, dto.getCode(), StandardOpenOption.CREATE);
+    //     System.out.println("filePath: " + filePath);
+    //     // 拷贝index.py文件，index.py文件在src/main/resources/common/index.py
+    //     Path indexFile = Paths.get("src/main/resources/common/index.py");
+    //     Path targetIndexFile = Paths.get(directoryPath + "/index.py");
+    //     Files.copy(indexFile, targetIndexFile);
+    //     // 将index.py和name.py文件打包成zip文件
+    //     String zipFileName = "index" + ".zip";
+    //     try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(Paths.get(zipFileName)))) {
+    //         addToZipFile(new File(filePath), zos);
+    //         addToZipFile(new File(directoryPath + "/index.py"), zos);
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    //     // 删除name.py文件和index.py文件
+    //     Files.delete(Paths.get(filePath));
+    //     Files.delete(Paths.get(directoryPath + "/index.py"));
+    //     // 拷贝yaml文件  yaml文件在src/main/resources/common/common.yaml， 拷贝后命名为DTO的name字段
+    //     Path yamlFile = Paths.get("src/main/resources/common/common.yaml");
+    //     Path targetYamlFile = Paths.get(directoryPath + "/" + dto.getName() + ".yaml");
+    //     Files.copy(yamlFile, targetYamlFile);
+    //     // 将yaml文件和index.zip文件打包成zip文件
+    //     String zipFileName2 = dto.getName() + ".zip";
+    //     try (ZipOutputStream zos = new ZipOutputStream(Files.newOutputStream(Paths.get(zipFileName2)))) {
+    //         addToZipFile(new File(targetYamlFile.toString()), zos);
+    //         addToZipFile(new File(zipFileName), zos);
+    //     } catch (IOException e) {
+    //         e.printStackTrace();
+    //     }
+    //     // 删除index.zip文件和yaml文件
+    //     Files.delete(Paths.get(zipFileName));
+    //     Files.delete(Paths.get(targetYamlFile.toString()));
+    //     System.out.println("zipFileName2: " + zipFileName2);
+    //     String functionName = user.getAccount() + "_" + dto.getName();
+    //     // 上传到华为云
+    //     try {
+    //         String urn = uploadFunction(zipFileName2, functionName);
+    //         // 删除zip文件
+    //         Plugin plugin = new Plugin(dto, user, "", urn);
+    //         pluginRepository.save(plugin);
+    //     } catch (Exception e) {
+    //         e.printStackTrace();
+    //         return new ResponseDTO(false, "Upload function failed");
+    //     }
+    //     return new ResponseDTO(true, "Create plugin successfully");
+    // }
     public GetPluginsOkResponseDTO getPlugins(String q, String order, Integer page, Integer pageSize) {
         List<PluginBriefInfoDTO> plugins;
         if (order.equals("latest")) {
@@ -187,6 +261,9 @@ public class PluginServiceImpl implements PluginService {
         String ak = System.getenv("HUAWEICLOUD_SDK_AK");
         String sk = System.getenv("HUAWEICLOUD_SDK_SK");
 
+        System.out.println(ak);
+        System.out.println(sk);
+
         ICredential auth = new BasicCredentials()
                 .withAk(ak)
                 .withSk(sk);
@@ -198,6 +275,8 @@ public class PluginServiceImpl implements PluginService {
         ImportFunctionRequest request = new ImportFunctionRequest();
 
         request.withBody(body);
+
+        System.out.println(request.toString());
 
         ImportFunctionResponse response = client.importFunction(request);
         System.out.println(response.toString());
