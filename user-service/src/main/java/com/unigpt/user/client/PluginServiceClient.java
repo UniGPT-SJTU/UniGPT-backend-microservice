@@ -10,6 +10,5 @@ public interface PluginServiceClient {
     @PostMapping("/users/{userid}")
     ResponseEntity<Object> createUser(
             @PathVariable Integer userid,
-            @RequestParam String name,
-            @RequestParam String account);
+            @RequestParam String name);
 }

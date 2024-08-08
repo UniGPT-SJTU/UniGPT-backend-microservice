@@ -6,15 +6,17 @@ import com.unigpt.plugin.dto.PluginCreateTestDTO;
 import com.unigpt.plugin.dto.PluginDetailInfoDTO;
 import com.unigpt.plugin.dto.ResponseDTO;
 
-public interface PluginService {
+import com.unigpt.plugin.dto.*;
 
+public interface PluginService {
     /**
      * @brief 创建插件
      * @param dto 插件编辑信息
      * @param userid 用户id
      * @return 创建结果
      */
-    ResponseDTO createPlugin(PluginCreateDTO dto, Integer userid) throws Exception;
+    ResponseDTO createPlugin(PluginInfoDTO dto, Integer userid) throws Exception;
+
 
     /**
      * @brief 获取插件列表
@@ -46,12 +48,5 @@ public interface PluginService {
 //     */
 //    PluginEditInfoDTO getPluginEditInfo(Integer id, String token);
 //
-//    /**
-//     * @brief 测试插件
-//     * @param dto 插件编辑信息
-//     * @param token 用户token
-//     * @param params 参数列表
-//     * @return 创建结果
-//     */
-//    ResponseDTO testCreatePlugin(PluginCreateTestDTO dto, String token) throws Exception;
+
 }

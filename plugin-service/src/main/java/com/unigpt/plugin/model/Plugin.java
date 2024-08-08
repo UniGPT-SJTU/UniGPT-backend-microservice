@@ -1,24 +1,10 @@
 package com.unigpt.plugin.model;
 
-import java.util.List;
-
-import com.unigpt.plugin.dto.PluginCreateDTO;
-import com.unigpt.plugin.model.Parameter;
-
-import jakarta.persistence.CascadeType;
-import jakarta.persistence.Column;
-import jakarta.persistence.ElementCollection;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
-import jakarta.persistence.JoinColumn;
-import jakarta.persistence.ManyToMany;
-import jakarta.persistence.ManyToOne;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.unigpt.plugin.dto.PluginInfoDTO;
+import jakarta.persistence.*;
 import lombok.Data;
+
+import java.util.List;
 
 @Data
 @Entity
@@ -69,10 +55,6 @@ public class Plugin {
     @ManyToMany(mappedBy = "plugins")
     private List<Bot> bots;
 
-    // 这个插件在华为云functiongraph上的urn
-    @Column(name = "fg_urn")
-    private String urn;
-
     // constructor
     public Plugin(String name, String description, List<Parameter> parameters, String url, User creator, String avatar, List<String> photos, String detail, Boolean isPublished) {
         this.name = name;
@@ -86,7 +68,7 @@ public class Plugin {
         this.isPublished = isPublished;
     }
 
-    public Plugin(PluginCreateDTO dto, User user, String url, String urn) {
+    public Plugin(PluginInfoDTO dto, User user, String url) {
         this.name = dto.getName();
         this.description = dto.getDescription();
 
@@ -98,7 +80,6 @@ public class Plugin {
         this.isPublished = dto.getIsPublished();
         // for parameters
         this.parameters = dto.getParameters().stream().map(p -> new Parameter(p, this)).toList();
-        this.urn = urn;
     }
 
     // constructor
