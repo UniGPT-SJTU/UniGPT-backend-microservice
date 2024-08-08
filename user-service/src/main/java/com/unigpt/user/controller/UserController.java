@@ -72,7 +72,7 @@ public class UserController {
 
         try {
             service.updateUserInfo(userid, userUpdateDTO);
-            return ResponseEntity.ok("User info updated successfully");
+            return ResponseEntity.ok(new ResponseDTO(true, "User updated"));
         } catch (Exception e) {
             return ResponseEntity.status(404).body(e.getMessage());
         }

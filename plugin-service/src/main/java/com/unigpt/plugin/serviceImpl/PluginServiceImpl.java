@@ -33,6 +33,7 @@ import com.unigpt.plugin.dto.PluginDetailInfoDTO;
 import com.unigpt.plugin.dto.ResponseDTO;
 import com.unigpt.plugin.model.Plugin;
 import com.unigpt.plugin.model.User;
+import com.unigpt.plugin.service.DockerService;
 import com.unigpt.plugin.service.PluginService;
 import com.unigpt.plugin.utils.PaginationUtils;
 
@@ -42,14 +43,17 @@ public class PluginServiceImpl implements PluginService {
     private final PluginRepository pluginRepository;
     private final UserRepository userRepository;
     private final BotServiceClient botServiceClient;
+    private final DockerService dockerService;
 
     public PluginServiceImpl(
             PluginRepository pluginRepository,
             UserRepository userRepository,
-            BotServiceClient botServiceClient) {
+            BotServiceClient botServiceClient,
+            DockerService dockerService) {
         this.pluginRepository = pluginRepository;
         this.userRepository = userRepository;
         this.botServiceClient = botServiceClient;
+        this.dockerService = dockerService;
     }
 
     public ResponseDTO createPlugin(PluginCreateDTO dto, Integer userid) throws Exception {

@@ -27,6 +27,8 @@ public interface PluginService {
 
     PluginDetailInfoDTO getPluginInfo(Integer pluginid, Integer userid);
 
+    ResponseDTO testCreatePlugin(PluginCreateTestDTO dto, Integer userid) throws Exception;
+
 //    /**
 //     * @brief 获取插件详细信息
 //     * @param id 插件id

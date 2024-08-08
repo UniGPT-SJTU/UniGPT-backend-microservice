@@ -37,6 +37,18 @@ public class PluginController {
         }
     }
 
+    @PostMapping("/test")
+    public ResponseEntity<Object> testCreatePlugin(
+            @RequestBody PluginCreateTestDTO dto,
+            @RequestHeader("X-User-Id") Integer userid){
+        try {
+            return ResponseEntity.ok(pluginService.testCreatePlugin(dto, userid));
+        } catch (Exception e) {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND)
+                    .body(new ResponseDTO(false, e.getMessage()));
+        }
+    }
+
     @GetMapping
     public ResponseEntity<Object> getPlugins(
             @RequestParam(defaultValue = "") String q,

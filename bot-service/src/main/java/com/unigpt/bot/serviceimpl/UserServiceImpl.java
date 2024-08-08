@@ -21,14 +21,14 @@ import com.unigpt.bot.service.UserService;
 @Service
 public class UserServiceImpl implements UserService {
     private final UserRepository userRepository;
-    
+
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
     }
 
     @Override
     public void createUser(Integer id, UpdateUserInfoRequestDTO dto) {
-        if(userRepository.findById(id).isPresent()) {
+        if (userRepository.findById(id).isPresent()) {
             throw new IllegalArgumentException("User already exists");
         }
         User user = new User(id, dto.getName(), dto.getAvatar());
@@ -36,12 +36,9 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public void updateUserInfo(Integer requestUserId, Integer targetUserId,
+    public void updateUserInfo(Integer targetUserId,
             UpdateUserInfoRequestDTO updateUserInfoRequestDTO)
             throws AuthenticationException {
-        if (!requestUserId.equals(targetUserId)) {
-            throw new AuthenticationException("Unauthorized to update user info");
-        }
         User targetUser = userRepository.findById(targetUserId)
                 .orElseThrow(() -> new NoSuchElementException("User not found"));
 
@@ -84,6 +81,5 @@ public class UserServiceImpl implements UserService {
 
         return new GetBotsOkResponseDTO(userRepository.countCreatedBotsByUserId(userid), bots);
     }
-
 
 }

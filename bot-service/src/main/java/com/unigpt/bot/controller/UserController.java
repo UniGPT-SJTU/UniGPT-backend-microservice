@@ -11,7 +11,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -46,10 +45,9 @@ public class UserController {
     @PutMapping("/{id}")
     public ResponseEntity<Object> updateUserProfile(
             @PathVariable Integer id,
-            @RequestBody UpdateUserInfoRequestDTO updateUserInfoRequestDTO,
-            @RequestHeader(name = "X-User-Id") Integer requestUserId) {
+            @RequestBody UpdateUserInfoRequestDTO updateUserInfoRequestDTO) {
         try {
-            service.updateUserInfo(requestUserId, id, updateUserInfoRequestDTO);
+            service.updateUserInfo(id, updateUserInfoRequestDTO);
             return ResponseEntity.ok(new ResponseDTO(true, "Update user info successfully"));
         } catch (AuthenticationException e) {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED)
