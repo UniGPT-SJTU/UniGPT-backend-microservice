@@ -21,7 +21,7 @@ import com.unigpt.plugin.service.DockerService;
 @Service
 public class DockerServiceImpl implements DockerService {
 
-    public String invokeFunction(String username, String moduleName, String functionName, List<String> params) {
+    public String invokeFunction(String filePath, String moduleName, String functionName, List<String> params) {
         try {
             // 获取当前工作目录
             String currentDir = new File("").getAbsolutePath();
@@ -30,8 +30,7 @@ public class DockerServiceImpl implements DockerService {
             Path tempDir = Files.createTempDirectory("docker_temp");
             tempDir.toFile().deleteOnExit();
 
-            // 提取资源文件到临时目录
-            Path moduleScriptPath = extractResourceToTempDir("src/main/resources/" + username + "/" + moduleName + ".py", tempDir);
+            // 提取run.py文件到临时目录
             Path runScriptPath = extractResourceToTempDir("src/main/resources/func/run.py", tempDir);
 
             JSONObject jsonParams = new JSONObject();
@@ -40,7 +39,7 @@ public class DockerServiceImpl implements DockerService {
             // 构建Docker命令
             String[] command = {
                 "docker", "run", "--rm",
-                "-v", moduleScriptPath.toString() + ":/app/" + moduleName + ".py",
+                "-v", filePath + ":/app/" + moduleName + ".py",
                 "-v", runScriptPath.toString() + ":/app/run.py",
                 "mytest_py",
                 "python3", "run.py",
