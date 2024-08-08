@@ -67,7 +67,7 @@ public class UserServiceImpl implements UserService {
                 .getStatusCode().isError())
             throw new RuntimeException("Failed to create user in chat service");
 
-        if (pluginServiceClient.createUser(user.getId(), user.getName())
+        if (pluginServiceClient.createUser(user.getId(), user.getName(), user.getAccount())
                 .getStatusCode().isError())
             throw new RuntimeException("Failed to create user in plugin service");
 
