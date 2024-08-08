@@ -73,13 +73,13 @@ services:
 
       USER_SERVICE_URL: http://userService:8080
       BOT_SERVICE_URL: http://botService:8080
-
       # TODO: 配置代理
 
   plugin_service:
     build:
       context: ./plugin-service
       dockerfile: Dockerfile
+    privileged: true
     image: plugin_service_image:latest
     ports:
       - "8085:8080"
@@ -130,7 +130,7 @@ services:
       MYSQL_USER: unigpt
       MYSQL_PASSWORD: unigpt
       MYSQL_DATABASE: unigpt_chat
-    volumes: 
+    volumes:
       - chat_db_data:/var/lib/mysql
 
   plugin_db:
@@ -142,7 +142,7 @@ services:
       MYSQL_USER: unigpt
       MYSQL_PASSWORD: unigpt
       MYSQL_DATABASE: unigpt_plugin
-    volumes: 
+    volumes:
       - plugin_db_data:/var/lib/mysql
 
   postgresql_db:
