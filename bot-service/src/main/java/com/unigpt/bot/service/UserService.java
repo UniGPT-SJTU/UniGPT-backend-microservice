@@ -17,12 +17,10 @@ public interface UserService {
 
     /**
      * @brief 更新用户信息
-     * @param requestUserId            请求用户id
      * @param targetUserId             目标用户id
      * @param updateUserInfoRequestDTO 更新用户信息请求
      */
     void updateUserInfo(
-            Integer requestUserId,
             Integer targetUserId,
             UpdateUserInfoRequestDTO updateUserInfoRequestDTO) throws AuthenticationException;
 

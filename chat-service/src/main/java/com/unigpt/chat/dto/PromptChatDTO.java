@@ -9,7 +9,9 @@ import lombok.Data;
 public class PromptChatDTO {
     private ChatType type;
     private String content;
-
+    public PromptChatDTO() {
+        // not used
+    }
     public PromptChatDTO(Chat chat) {
         this.type = chat.getType();
         this.content = chat.getContent();
