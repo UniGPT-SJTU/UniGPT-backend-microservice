@@ -55,40 +55,6 @@ public class PluginServiceImpl implements PluginService {
         User user = userRepository.findByTrueId(userid)
                 .orElseThrow(() -> new NoSuchElementException("User not found for ID: " + userid));
 
-        ////        // 构建目标文件路径
-////        String directoryPath = "src/main/resources/" + user.getAccount();
-////        String filePath = directoryPath + "/" + dto.getName() + ".py";
-////
-////        // 判断文件是否存在，如果存在则抛出异常
-////        if (Files.exists(Paths.get(filePath))) {
-////            return new ResponseDTO(false, "Plugin already exists");
-////        }
-////
-////        // 创建目录
-////        Path path = Paths.get(directoryPath);
-////        Files.createDirectories(path);
-////
-////        // 将code字段的内容写入到文件中
-////        Path file = Paths.get(filePath);
-////        Files.writeString(file, dto.getCode(), StandardOpenOption.CREATE);
-//
-//        String filePath = "";
-//        Plugin plugin = new Plugin(dto, user, filePath);
-//        pluginRepository.save(plugin);
-//
-//        // Call botServiceClient to create a plugin
-//        ResponseEntity<Object> response =  botServiceClient.createPlugin(plugin.getId(), new PluginEditInfoDTO(plugin));
-//        // No need for undo operation since plugin is not created in pluginRepository yet
-//        if(response.getStatusCode().isError()){
-//            throw new Exception("Failed to create plugin in Bot Microservice");
-//        }
-//
-//        return new ResponseDTO(true, "Create plugin successfully");
-//
-//
-//
-//
-
         // 构建目标文件路径
         String directoryPath = "src/main/resources/" + user.getAccount() + "/" + dto.getName();
         String filePath = directoryPath + "/" + dto.getName() + ".py";
