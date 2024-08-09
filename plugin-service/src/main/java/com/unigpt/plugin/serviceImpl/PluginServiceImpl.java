@@ -32,6 +32,7 @@ import com.unigpt.plugin.dto.PluginBriefInfoDTO;
 import com.unigpt.plugin.dto.PluginCreateDTO;
 import com.unigpt.plugin.dto.PluginCreateTestDTO;
 import com.unigpt.plugin.dto.PluginDetailInfoDTO;
+import com.unigpt.plugin.dto.PluginEditInfoDTO;
 import com.unigpt.plugin.dto.ResponseDTO;
 import com.unigpt.plugin.model.Plugin;
 import com.unigpt.plugin.model.User;
@@ -169,6 +170,9 @@ public class PluginServiceImpl implements PluginService {
             // 删除zip文件
             Plugin plugin = new Plugin(dto, user, "", urn);
             pluginRepository.save(plugin);
+
+            // 调用bot-service创建plugin的冗余信息
+            botServiceClient.createPlugin(plugin.getId(), new PluginEditInfoDTO(plugin));
         } catch (Exception e) {
             e.printStackTrace();
             return new ResponseDTO(false, "Upload function failed");
