@@ -12,8 +12,8 @@ spring:
     show-sql: false
   data:
     redis:
-      host: 123.60.187.205
-      port: 30004
+      host: 172.17.0.1
+      port: 6379
 logging:
   level:
     org.springframework.web.socket: DEBUG

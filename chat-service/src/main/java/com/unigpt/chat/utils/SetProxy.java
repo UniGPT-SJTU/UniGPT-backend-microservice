@@ -12,4 +12,11 @@ public class SetProxy {
         System.setProperty("https.proxyHost", proxyHost);
         System.setProperty("https.proxyPort", proxyPort);
     }
+
+    public static void unsetProxy() {
+        System.clearProperty("http.proxyHost");
+        System.clearProperty("http.proxyPort");
+        System.clearProperty("https.proxyHost");
+        System.clearProperty("https.proxyPort");
+    }
 }

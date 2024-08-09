@@ -33,6 +33,7 @@ import com.unigpt.chat.repository.HistoryRepository;
 import com.unigpt.chat.repository.MemoryRepository;
 import com.unigpt.chat.repository.UserRepository;
 import com.unigpt.chat.service.BotService;
+import com.unigpt.chat.utils.SetProxy;
 import com.unigpt.chat.utils.StringTemplateParser;
 
 @Service
@@ -82,6 +83,7 @@ public class BotServiceImpl implements BotService {
         @Override
         public CreateBotHistoryOkResponseDTO createBotHistory(Integer userId, Integer botId, List<PromptDTO> promptList)
                         throws Exception {
+                SetProxy.unsetProxy();
                 Bot bot = botRepository.findById(botId)
                                 .orElseThrow(() -> new NoSuchElementException("Bot not found for ID: " + botId));
 
@@ -154,6 +156,8 @@ public class BotServiceImpl implements BotService {
                                                 .map(chat -> new MemoryItem(chat, memory))
                                                 .collect(Collectors.toList()));
                 memoryRepository.save(memory);
+
+                SetProxy.setProxy();
 
                 // 将对话历史加入用户的 histories 列表
                 // user.getHistories().add(history);

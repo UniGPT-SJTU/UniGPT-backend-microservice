@@ -15,6 +15,7 @@ import com.unigpt.chat.service.Assistant;
 import com.unigpt.chat.service.FunGraphService;
 import com.unigpt.chat.service.KnowledgeService;
 import com.unigpt.chat.service.LLMService;
+import com.unigpt.chat.utils.SetProxy;
 
 import dev.langchain4j.agent.tool.ToolExecutor;
 import dev.langchain4j.agent.tool.ToolSpecification;
@@ -89,7 +90,10 @@ public class LLMServiceImpl implements LLMService {
         // 获取history中的bot的plugins，将每个plugins创建对应的ToolSpecification
         // 通过ToolSpecification创建对应的ToolExecutor
         List<PluginDTO> plugins;
+        SetProxy.unsetProxy();
         plugins = pluginServiceClient.getBotPlugins(history.getBot().getId());
+        SetProxy.setProxy();
+        
         Map<ToolSpecification, ToolExecutor> tools = new HashMap<>();
         ToolExecutor toolExecutor = (toolExecutionRequest, memoryId) -> {
             System.out.println("Executing tool: " + toolExecutionRequest.name());
