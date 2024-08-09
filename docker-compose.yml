@@ -169,8 +169,8 @@ services:
     container_name: clash
     ports:
       - "1234:7890"   # HTTP 代理端口
-      - "7891:7891"   # SOCKS5 代理端口
-      - "9090:9090"   # Clash Web 界面端口
+      - "7892:7891"   # SOCKS5 代理端口
+      - "9091:9090"   # Clash Web 界面端口
     volumes:
       - ./config.yaml:/root/.config/clash/config.yaml  # 配置文件挂载
     restart: unless-stopped

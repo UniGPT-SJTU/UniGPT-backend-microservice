@@ -93,7 +93,7 @@ public class LLMServiceImpl implements LLMService {
         SetProxy.unsetProxy();
         plugins = pluginServiceClient.getBotPlugins(history.getBot().getId());
         SetProxy.setProxy();
-        
+
         Map<ToolSpecification, ToolExecutor> tools = new HashMap<>();
         ToolExecutor toolExecutor = (toolExecutionRequest, memoryId) -> {
             System.out.println("Executing tool: " + toolExecutionRequest.name());
@@ -176,6 +176,9 @@ public class LLMServiceImpl implements LLMService {
                 .tools(tools)
                 .contentRetriever(contentRetriever)
                 .build();
+
+        options.getSendFunctionCall().accept(options.getSession(), "知识库调用");
+        options.getSendFunctionResult().accept(options.getSession(), "知识库调用结果");
 
         return assistant.chat(history.getId(), userMessage);
     }

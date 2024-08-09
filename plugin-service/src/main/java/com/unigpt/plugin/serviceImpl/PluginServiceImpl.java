@@ -94,7 +94,7 @@ public class PluginServiceImpl implements PluginService {
         // 使用命令行创建文件并写入内容
         try {
             // 写入内容
-            ProcessBuilder pb = new ProcessBuilder("bash", "-c", "echo \"" + codeContent + "\" > " + filePath);
+            ProcessBuilder pb = new ProcessBuilder("bash", "-c", "echo \"" + codeContent.replace("\"", "\\\"") + "\" > " + filePath);
 
             System.out.println("Command: " + pb.command());
             

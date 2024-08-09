@@ -42,7 +42,16 @@ public class DockerServiceImpl implements DockerService {
     
             // 将filePath的文件读取出来并打印
             String fileContent = code;
-    
+
+            String rawCommand = "docker run --rm " +
+                "-v /home/uni/UniGPT-backend-microservice/plugin-service/src/main/resources/func/run.py:/app/run.py " +
+                "mytest_py " +
+                "bash -c " +
+                "echo \\\"" + fileContent.replace("\\", "\\\\").replace("\"", "\\\"") + "\\\" > /app/" + moduleName + ".py && python3 run.py " + moduleName + " " + functionName + " '" + jsonParams.toString().replace("'", "\\'") + "'";
+            
+            System.out.println("Raw Command: \n");
+            System.out.println("Raw Command: " + rawCommand);
+  
             // 构建Docker命令
             String[] command = {
                 "docker", "run", "--rm",
