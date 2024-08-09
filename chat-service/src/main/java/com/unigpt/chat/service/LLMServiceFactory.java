@@ -1,9 +1,11 @@
 package com.unigpt.chat.service;
+
 import java.util.HashMap;
 import java.util.Map;
 
 import org.springframework.stereotype.Component;
 
+import com.unigpt.chat.client.PluginServiceClient;
 import com.unigpt.chat.model.BaseModelType;
 import com.unigpt.chat.serviceimpl.LLMServiceImpl;
 
@@ -15,13 +17,19 @@ public class LLMServiceFactory {
     private final Map<BaseModelType, LLMService> llmServiceMap;
 
     public LLMServiceFactory(
-        ChatMemoryStore chatMemoryStore, 
-        // DockerService dockerService, 
-        KnowledgeService knowledgeService
-    ) {
+            ChatMemoryStore chatMemoryStore,
+            // DockerService dockerService,
+            KnowledgeService knowledgeService,
+            FunGraphService funGraphService,
+            PluginServiceClient pluginServiceClient) {
         llmServiceMap = new HashMap<>();
-        for(BaseModelType type: BaseModelType.values()) {
-            llmServiceMap.put(type, new LLMServiceImpl(type, chatMemoryStore, knowledgeService));
+        for (BaseModelType type : BaseModelType.values()) {
+            llmServiceMap.put(type, new LLMServiceImpl(
+                    type,
+                    chatMemoryStore,
+                    knowledgeService,
+                    funGraphService,
+                    pluginServiceClient));
         }
     }
 

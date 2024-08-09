@@ -73,7 +73,12 @@ services:
 
       USER_SERVICE_URL: http://userService:8080
       BOT_SERVICE_URL: http://botService:8080
+      PLUGIN_SERVICE_URL: http://pluginService:8080
+
       # TODO: 配置代理
+      HTTP_PROXY_HOST: clash
+      HTTP_PROXY_PORT: 7890
+      
 
   plugin_service:
     volumes:
@@ -159,6 +164,16 @@ services:
     volumes:
       - postgresql_data:/var/lib/postgresql/data
 
+  clash:
+    image: dreamacro/clash
+    container_name: clash
+    ports:
+      - "1234:7890"   # HTTP 代理端口
+      - "7891:7891"   # SOCKS5 代理端口
+      - "9090:9090"   # Clash Web 界面端口
+    volumes:
+      - ./config.yaml:/root/.config/clash/config.yaml  # 配置文件挂载
+    restart: unless-stopped
 volumes:
   user_db_data:
   bot_db_data:

@@ -34,3 +34,5 @@ services:
     url: ${USER_SERVICE_URL}
   bot-service:
     url: ${BOT_SERVICE_URL}
+  plugin-service:
+    url: ${PLUGIN_SERVICE_URL}

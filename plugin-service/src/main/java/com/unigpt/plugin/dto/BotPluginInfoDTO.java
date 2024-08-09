@@ -15,7 +15,7 @@ public class BotPluginInfoDTO {
 
     public BotPluginInfoDTO(Plugin plugin){
         this.name = plugin.getName();
-        this.creator = plugin.getCreator().getName();
+        this.creator = plugin.getCreator().getAccount();
         this.description = plugin.getDescription();
         this.urn = plugin.getUrn();
         this.parameters = plugin.getParameters().stream()
