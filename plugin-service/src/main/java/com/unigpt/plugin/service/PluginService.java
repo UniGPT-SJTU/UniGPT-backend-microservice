@@ -1,20 +1,20 @@
 package com.unigpt.plugin.service;
 
-
 import com.unigpt.plugin.dto.GetPluginsOkResponseDTO;
+import com.unigpt.plugin.dto.PluginCreateDTO;
+import com.unigpt.plugin.dto.PluginCreateTestDTO;
 import com.unigpt.plugin.dto.PluginDetailInfoDTO;
-import com.unigpt.plugin.dto.PluginInfoDTO;
 import com.unigpt.plugin.dto.ResponseDTO;
 
 public interface PluginService {
+
     /**
      * @brief 创建插件
      * @param dto 插件编辑信息
      * @param userid 用户id
      * @return 创建结果
      */
-    ResponseDTO createPlugin(PluginInfoDTO dto, Integer userid) throws Exception;
-
+    ResponseDTO createPlugin(PluginCreateDTO dto, Integer userid) throws Exception;
 
     /**
      * @brief 获取插件列表
@@ -27,6 +27,8 @@ public interface PluginService {
     GetPluginsOkResponseDTO getPlugins(String q, String order, Integer page, Integer pageSize);
 
     PluginDetailInfoDTO getPluginInfo(Integer pluginid, Integer userid);
+
+    ResponseDTO testCreatePlugin(PluginCreateTestDTO dto, Integer userid) throws Exception;
 
 //    /**
 //     * @brief 获取插件详细信息
@@ -44,7 +46,6 @@ public interface PluginService {
 //     */
 //    PluginEditInfoDTO getPluginEditInfo(Integer id, String token);
 //
-
 //    /**
 //     * @brief 测试插件
 //     * @param dto 插件编辑信息

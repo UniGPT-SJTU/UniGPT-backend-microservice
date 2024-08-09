@@ -1,6 +1,7 @@
 package com.unigpt.bot.LLMArgs;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.unigpt.bot.model.BaseModelType;
 
 import jakarta.persistence.Embeddable;
@@ -19,6 +20,7 @@ public class LLMArgs {
         return new LLMArgsBuilder();
     }
 
+    @JsonIgnore
     public Double getAdjustedTemperature() {
         return BaseModelType.GPT.equals(baseModelType) ? temperature * 2: temperature;
     }

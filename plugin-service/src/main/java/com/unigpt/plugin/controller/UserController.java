@@ -17,10 +17,11 @@ public class UserController {
     @PostMapping("/{userid}")
     public ResponseEntity<ResponseDTO> createUser(
             @PathVariable Integer userid,
-            @RequestParam String name
+            @RequestParam String name,
+            @RequestParam String account
     ) {
         try{
-            return ResponseEntity.ok(userService.createUser(userid, name));
+            return ResponseEntity.ok(userService.createUser(userid, name, account));
         } catch (Exception e) {
             return ResponseEntity.badRequest().body(new ResponseDTO(false, e.getMessage()));
         }

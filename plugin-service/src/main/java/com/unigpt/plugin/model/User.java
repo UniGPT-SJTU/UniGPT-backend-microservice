@@ -19,6 +19,9 @@ public class User {
     @Column(name = "name")
     private String name;
 
+    @Column(name = "account")
+    private String account;
+
     @OneToMany
     @JoinColumn(name = "creator_id")
     private List<Plugin> createPlugins;
@@ -28,8 +31,9 @@ public class User {
     public User() {
     }
 
-    public User(Integer userid, String username) {
+    public User(Integer userid, String username, String account) {
         this.trueId = userid;
         this.name = username;
+        this.account = account;
     }
 }
