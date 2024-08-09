@@ -19,12 +19,11 @@ RUN mv /etc/apt/sources.list /etc/apt/sources.list.bak && \
 RUN apt-get update && apt-get install -y docker docker.io && apt-get clean && rm -rf /var/lib/apt/lists/*
 
 COPY --from=build /app/target/*.jar app.jar
+COPY mytest_py.tar /app/mytest_py.tar
 
 # 设置代理环境变量
 ENV HUAWEICLOUD_SDK_AK=C0HLZ2JBNJNX156VWRLU
 ENV HUAWEICLOUD_SDK_SK=rVUbpBGPlVYdhti0H6BtwdTdKNTxxYNnoKTEeK5R
-
-
 
 EXPOSE 8080
 

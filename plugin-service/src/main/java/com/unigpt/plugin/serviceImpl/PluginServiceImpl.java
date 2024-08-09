@@ -1,8 +1,10 @@
 package com.unigpt.plugin.serviceImpl;
 
+import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
@@ -57,38 +59,65 @@ public class PluginServiceImpl implements PluginService {
         this.botServiceClient = botServiceClient;
         this.dockerService = dockerService;
     }
-
+    
+    
     public ResponseDTO testCreatePlugin(PluginCreateTestDTO dto, Integer userid) throws Exception {
         User user = userRepository.findByTrueId(userid)
                 .orElseThrow(() -> new NoSuchElementException("User not found for ID: " + userid));
-
+    
         // 构建目标文件路径
-        String directoryPath = System.getProperty("java.io.tmpdir") + "/test/" + user.getName();
-        String filePath = directoryPath + "/" + dto.getName() + ".py";
-
-        // 判断文件是否存在，如果存在则清除
-        if (Files.exists(Paths.get(filePath))) {
-            Files.delete(Paths.get(filePath));
+        String username = user.getAccount();  // 使用user.getAccount()获取用户账户名
+        String functionName = dto.getName();
+        String dirPath = "/home/uni/tmp";
+        String filePath = dirPath + "/tmp_" + username + "_" + functionName + ".py";
+    
+        // 确保目录存在
+        Path dir = Paths.get(dirPath);
+        if (!Files.exists(dir)) {
+            Files.createDirectories(dir);
         }
-
-        // 创建目录
-        Path path = Paths.get(directoryPath);
-        Files.createDirectories(path);
-
-        // 将code字段的内容写入到文件中
+    
+        // 判断文件是否存在，如果存在则清除
         Path file = Paths.get(filePath);
-        Files.writeString(file, dto.getCode(), StandardOpenOption.CREATE);
+        if (Files.exists(file)) {
+            Files.delete(file);
+        }
+    
+        // 打印 dto.getCode() 的值
+        String codeContent = dto.getCode();
+        System.out.println("code: " + codeContent);
+    
+        // 打印文件路径
+        System.out.println("filePath: " + filePath);
+    
+        // 使用命令行创建文件并写入内容
+        try {
+            // 写入内容
+            ProcessBuilder pb = new ProcessBuilder("bash", "-c", "echo \"" + codeContent + "\" > " + filePath);
 
+            System.out.println("Command: " + pb.command());
+            
+            Process writeProcess = pb.start();
+            writeProcess.waitFor();
+    
+            // 读取文件内容进行验证
+            String writtenContent = Files.readString(file);
+            System.out.println("Written content: " + writtenContent);
+        } catch (IOException | InterruptedException e) {
+            System.err.println("Error writing to file: " + e.getMessage());
+            throw new IOException("Error writing to file", e);
+        }
+    
         // 调用dockerService执行测试
-        String output = dockerService.invokeFunction(filePath, dto.getName(), "handler", dto.getParamsValue());
-
+        String output = dockerService.invokeFunction(codeContent, functionName, "handler", dto.getParamsValue());
+    
         // 解析output为JSONObject来检查是否有error字段
         JSONObject jsonResponse = new JSONObject(output);
         boolean isSuccess = !jsonResponse.has("error");
-
+    
         // 删除测试文件
-        Files.delete(Paths.get(filePath));
-
+        // Files.delete(file);
+    
         return new ResponseDTO(isSuccess, output);
     }
 
