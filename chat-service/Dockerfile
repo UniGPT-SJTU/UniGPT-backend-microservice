@@ -19,6 +19,7 @@ RUN mv /etc/apt/sources.list /etc/apt/sources.list.bak && \
 RUN apt-get update && apt-get install -y curl && apt-get clean && rm -rf /var/lib/apt/lists/*
 RUN curl -sSL https://cn-north-4-hdn-koocli.obs.cn-north-4.myhuaweicloud.com/cli/latest/hcloud_install.sh -o ./hcloud_install.sh && bash ./hcloud_install.sh -y
 RUN hcloud configure set --cli-access-key="3FY9DIXH8CPZHLFHL9RF"  --cli-secret-key="7YDUBsXjojRjD9NUoTYU7BBkLkf5DjlaLesABjDq"
+RUN echo y | hcloud
 
 COPY --from=build /app/target/*.jar app.jar
 
