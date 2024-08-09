@@ -109,14 +109,14 @@ public class PluginServiceImpl implements PluginService {
         }
     
         // 调用dockerService执行测试
-        String output = dockerService.invokeFunction(filePath, functionName, "handler", dto.getParamsValue());
+        String output = dockerService.invokeFunction(codeContent, functionName, "handler", dto.getParamsValue());
     
         // 解析output为JSONObject来检查是否有error字段
         JSONObject jsonResponse = new JSONObject(output);
         boolean isSuccess = !jsonResponse.has("error");
     
         // 删除测试文件
-        Files.delete(file);
+        // Files.delete(file);
     
         return new ResponseDTO(isSuccess, output);
     }
