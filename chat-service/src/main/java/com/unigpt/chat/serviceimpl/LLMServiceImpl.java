@@ -129,7 +129,11 @@ public class LLMServiceImpl implements LLMService {
 
             // 从funGraphService调用函数
             String output = funGraphService.invokeFunction(toolUsername, toolNameModified, "handler", valuesList, urn);
+            
+           
+            // 发送截取后的结果
             options.getSendFunctionResult().accept(options.getSession(), output);
+
 
             System.out.println("Tool output: " + output);
             return output;
