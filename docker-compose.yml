@@ -40,6 +40,9 @@ services:
       CHAT_SERVICE_URL: http://chatService:8080
       PLUGIN_SERVICE_URL: http://pluginService:8080
 
+      REDIS_HOST: redis
+      REDIS_PORT: 6379
+
   chat_service:
     build:
       context: ./chat-service
@@ -75,7 +78,6 @@ services:
       BOT_SERVICE_URL: http://botService:8080
       PLUGIN_SERVICE_URL: http://pluginService:8080
 
-      # TODO: 配置代理
       HTTP_PROXY_HOST: clash
       HTTP_PROXY_PORT: 7890
       
@@ -174,6 +176,12 @@ services:
     volumes:
       - ./config.yaml:/root/.config/clash/config.yaml  # 配置文件挂载
     restart: unless-stopped
+
+  redis:
+    image: redis:latest
+    ports:
+      - "6379:6379"
+
 volumes:
   user_db_data:
   bot_db_data:
